@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Farmacia G</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-green-800 text-white">
+        <div class="container mx-auto p-6 flex justify-between items-center">
+            <h1 class="text-3xl font-bold">Farmacia G</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="hover:text-gray-400">Inicio</a></li>
+                    <li><a href="productos.html" class="hover:text-gray-400">Productos</a></li>
+                    <li><a href="servicios.html" class="hover:text-gray-400">Servicios</a></li>
+                    <li><a href="nosotros.html" class="hover:text-gray-400">Nosotros</a></li>
+                    <li><a href="contacto.html" class="hover:text-gray-400">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contacto Section -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-6">Contáctanos</h2>
+            <p class="text-lg text-gray-600 mb-8">Estamos aquí para ayudarte. Si tienes alguna pregunta o inquietud, no dudes en ponerte en contacto con nosotros a través de los siguientes medios.</p>
+            
+            <!-- Información de Contacto -->
+            <div class="flex justify-center space-x-16 mb-12">
+                <div>
+                    <h3 class="text-2xl font-bold">Dirección</h3>
+                    <p class="text-gray-600">Calle Salud 123, Ciudad</p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">Teléfono</h3>
+                    <p class="text-gray-600">+123 456 7890</p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">Correo Electrónico</h3>
+                    <p class="text-gray-600">contacto@saludvida.com</p>
+                </div>
+            </div>
+
+            <!-- Formulario de Contacto -->
+            <div class="max-w-md mx-auto bg-gray-100 p-8 rounded-lg shadow-lg">
+                <form action="#" method="POST">
+                    <div class="mb-4">
+                        <label for="name" class="block text-left font-bold mb-2">Nombre</label>
+                        <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-left font-bold mb-2">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" class="w-full p-2 border border-gray-300 rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="block text-left font-bold mb-2">Mensaje</label>
+                        <textarea id="message" name="message" class="w-full p-2 border border-gray-300 rounded" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="bg-green-800 text-white font-bold py-2 px-4 rounded hover:bg-green-700">Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-green-800 text-white py-6">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; 2024 Farmacia G. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
