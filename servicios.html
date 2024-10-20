@@ -32,6 +32,16 @@
     </style>
 </head>
 
+<script>
+    // Script to toggle mobile menu
+    const menuBtn = document.getElementById('menu-btn');
+    const menu = document.getElementById('menu');
+
+    menuBtn.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+</script>
+
 <body class="bg-white text-gray-800">
 
     <!-- Navbar -->
