@@ -1,52 +1,135 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmacia G</title>
+    <title>Farmacia G | Innovación en Salud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-</head>
-<body class="bg-white text-gray-800">
+    <style>
+        .text-gradient {
+            background: linear-gradient(90deg, #f97316, #f43f5e);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
 
-    <!-- Header -->
-    <header class="bg-orange-600 text-white">
+        .button-glow {
+            box-shadow: 0 0 10px 2px rgba(249, 115, 22, 0.8);
+        }
+
+        .neon-border {
+            border: 2px solid transparent;
+            background: linear-gradient(90deg, #f97316, #f43f5e);
+            background-clip: padding-box, border-box;
+            background-origin: border-box;
+        }
+
+        .btn-hover:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-r from-orange-50 via-white to-orange-100 text-gray-800">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 bg-white bg-opacity-90 backdrop-blur-lg shadow-md z-50">
         <div class="container mx-auto p-4 flex justify-between items-center">
-            <h1 class="text-3xl font-bold">Farmacia G</h1>
-            <nav>
-                <ul class="flex space-x-4">
-                    <li><a href="index.html" class="hover:text-gray-300">Inicio</a></li>
-                    <li><a href="productos.html" class="hover:text-gray-300">Productos</a></li>
-                    <li><a href="servicios.html" class="hover:text-gray-300">Servicios</a></li>
-                    <li><a href="nosotros.html" class="hover:text-gray-300">Nosotros</a></li>
-                    <li><a href="contacto.html" class="hover:text-gray-300">Contacto</a></li>
-                </ul>
+            <!-- Logo -->
+            <h1 class="text-4xl font-extrabold text-gradient">Farmacia G</h1>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="block md:hidden focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+
+            <!-- Navbar Links -->
+            <nav id="menu" class="hidden md:flex space-x-8 text-lg font-semibold">
+                <a href="index.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Inicio</a>
+                <a href="productos.html"
+                    class="text-gray-700 hover:text-orange-500 transition duration-300">Productos</a>
+                <a href="servicios.html"
+                    class="text-gray-700 hover:text-orange-500 transition duration-300">Servicios</a>
+                <a href="nosotros.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Nosotros</a>
+                <a href="contacto.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Contacto</a>
             </nav>
         </div>
     </header>
 
+    <script>
+        // Script to toggle mobile menu
+        const menuBtn = document.getElementById('menu-btn');
+        const menu = document.getElementById('menu');
+
+        menuBtn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
+
+
     <!-- Hero Section -->
-    <section class="bg-cover bg-center h-[60vh] text-white flex items-center justify-center" style="background-image: url('https://www.unir.net/wp-content/uploads/2022/10/efficient-pharmacy-operations-thanks-to-teamwork-picture-id1036131880.jpg');">
-        <div class="bg-black bg-opacity-40 p-8 rounded-lg text-center">
-            <h2 class="text-4xl font-semibold mb-4">Tu Salud, Nuestra Prioridad</h2>
-            <a href="productos.html" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded">Ver Productos</a>
+    <section class="relative bg-center h-[70vh] flex items-center justify-center"
+        style="background-image: url('https://www.unir.net/wp-content/uploads/2022/10/efficient-pharmacy-operations-thanks-to-teamwork-picture-id1036131880.jpg'); background-size: cover;">
+        <div class="absolute inset-0 bg-gradient-to-r from-black to-transparent opacity-60"></div>
+        <div class="relative z-10 text-center text-white px-8 py-16">
+            <h2 class="text-5xl font-bold text-gradient mb-4">Innovamos para tu Bienestar</h2>
+            <p class="text-xl mb-6">Soluciones farmacéuticas modernas a tu alcance</p>
+            <a href="productos.html"
+                class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-full shadow-xl button-glow transition-all duration-300">Explorar
+                Productos</a>
         </div>
     </section>
 
     <!-- About Section -->
-    <section class="py-12 bg-white">
+    <section class="py-16 bg-gray-50">
         <div class="container mx-auto text-center">
-            <h2 class="text-3xl font-bold mb-6 text-orange-600">Bienvenidos a Farmacia G</h2>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Somos una farmacia comprometida con tu bienestar, ofreciendo una amplia gama de medicamentos, productos naturales y servicios de salud.</p>
+            <h2 class="text-4xl font-bold text-gradient mb-8">Descubre Farmacia G</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">Somos una farmacia innovadora, con un enfoque en
+                servicios y productos de calidad. Nos enorgullecemos de ser líderes en el sector, ofreciendo tecnología
+                avanzada en el cuidado de tu salud.</p>
+            <a href="nosotros.html"
+                class="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:scale-105 transition-all duration-300">Conócenos</a>
+        </div>
+    </section>
+
+    <!-- Interactive Section -->
+    <section class="py-16 bg-gradient-to-r from-orange-100 via-orange-200 to-pink-200">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div
+                class="p-8 bg-white rounded-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                <h3 class="text-2xl font-bold mb-4 text-gradient">Atención 24/7</h3>
+                <p class="text-gray-600 mb-4">Consulta con nuestros especialistas desde la comodidad de tu hogar.</p>
+                <a href="servicios.html" class="text-orange-500 font-semibold">Más información &rarr;</a>
+            </div>
+            <div
+                class="p-8 bg-white rounded-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                <h3 class="text-2xl font-bold mb-4 text-gradient">Productos Premium</h3>
+                <p class="text-gray-600 mb-4">Explora nuestra gama de productos seleccionados por expertos en salud.</p>
+                <a href="productos.html" class="text-orange-500 font-semibold">Ver catálogo &rarr;</a>
+            </div>
+            <div
+                class="p-8 bg-white rounded-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+                <h3 class="text-2xl font-bold mb-4 text-gradient">Servicios Digitales</h3>
+                <p class="text-gray-600 mb-4">Accede a recetas electrónicas y servicios de entrega a domicilio.</p>
+                <a href="contacto.html" class="text-orange-500 font-semibold">Contáctanos &rarr;</a>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-orange-600 text-white py-4">
+    <footer class="bg-gray-900 text-white py-10">
         <div class="container mx-auto text-center">
-            <p class="text-sm">&copy; 2024 Farmacia G. Todos los derechos reservados.</p>
+            <h3 class="text-3xl font-bold mb-6 text-gradient">Farmacia G</h3>
+            <p class="text-gray-400 mb-6">Innovación en salud para tu bienestar diario.</p>
+            <p class="text-sm text-gray-500">&copy; 2024 Farmacia G. Todos los derechos reservados.</p>
         </div>
     </footer>
 
 </body>
+
 </html>
