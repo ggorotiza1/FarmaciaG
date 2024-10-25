@@ -120,7 +120,33 @@ app.post('/comprar', async (req, res) => {
   }
 });
 
+// Endpoint para actualizar el stock
+app.post('/actualizar-stock', async (req, res) => {
+  const { pro_id, cantidad } = req.body;
 
+  // Validación básica
+  if (!pro_id || !cantidad) {
+      return res.status(400).json({ mensaje: 'Faltan datos: pro_id y cantidad son requeridos.' });
+  }
+
+  try {
+      // Actualizar el stock en la base de datos
+      const query = 'UPDATE public.productos SET pro_stock = pro_stock + $1 WHERE pro_id = $2 RETURNING *';
+      const values = [cantidad, pro_id];
+      
+      const result = await pool.query(query, values);
+      
+      // Verifica si se actualizó algún registro
+      if (result.rowCount === 0) {
+          return res.status(404).json({ mensaje: 'Producto no encontrado.' });
+      }
+
+      return res.json({ mensaje: 'Stock actualizado con éxito.', producto: result.rows[0] });
+  } catch (error) {
+      console.error('Error al actualizar el stock:', error);
+      return res.status(500).json({ mensaje: 'Error al actualizar el stock. Intenta nuevamente.' });
+  }
+});
 
 // Iniciar el servidor
 app.listen(port, () => {

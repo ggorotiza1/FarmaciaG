@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - Farmacia G</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
+
     <style>
         .text-gradient {
             background: linear-gradient(90deg, #f97316, #f43f5e);
@@ -55,11 +57,21 @@
             <div class="profile-info">
                 <h3 class="text-xl font-bold" id="user_nombre">Nombre Apellido</h3>
                 <p class="text-gray-600"><strong>Cédula:</strong> <span id="user_cedula">Cédula</span></p>
-                <p class="text-gray-600"><strong>Correo Electrónico:</strong> <span id="user_correo">correo@example.com</span></p>
+                <p class="text-gray-600"><strong>Correo Electrónico:</strong> <span
+                        id="user_correo">correo@example.com</span></p>
                 <p class="text-gray-600"><strong>Rol del Usuario:</strong> <span id="user_rol">Rol</span></p>
             </div>
         </div>
+
+        <!-- Botón de cerrar sesión -->
+        <div class="text-center mt-6">
+            <button id="logout-btn"
+                class="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition duration-200">
+                Cerrar Sesión
+            </button>
+        </div>
     </section>
+
 
     <!-- Product Section -->
     <section class="container mx-auto py-8">
@@ -240,6 +252,9 @@
                             <button onclick="deleteProduct(${producto.pro_id})" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
                                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAALFJREFUSEvtlVEKAjEMRGfuIgjudTyOn4KX8ToueJosFQt1t83U1uLP7l9JkzeT0A0x+OPg+nABZnYGcAVwLAh5AriQvJeEKsADwEm4nElOrQALiSSzQszMjb9yPXWqgIpvADGhd/Cp4w8HwwFReY311KV3v3l4PwWsFapzCq9yoAp2t2gHbN7Vty3ZZyB/Td0tUoQWQM2iWXOzi6f0ksOqvAE4KPXveHF1/nfpV6p3ry3epM4ZCBVpxgAAAABJRU5ErkJggg=="/>
                             </button>
+                            <button onclick="addStock(${producto.pro_id})" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded ml-2">
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAY5JREFUSEvNlD9IlWEUh5+HbGmwQUipIYKgobEh3RpqbAkEh0CI0kWoiGjMMcSIaAqKIIekpcVNwS2qoalJxwQVaQkK7uLJV+6V6+d9/V65Kp31HM5zfuefHLF5xPk5PkBERFPNH+Ctev8w1O0oaAO08t5QF7qF7GlRRDwBngFz6s1OgFYxam2LOwH6gDXgBHBe/VmFdAVIySJiBrgNTKlJ0S47DMAQ8Bn4BZxTGxGxCdmt21ST4j2W7WFE/AAuA6Pq+xJARLwCJoCX6oNE2w8wBrwGvqlX20vr1KKIOAlsAKeBS+pSHeAUsAr0AlfU7y1IBjCylfgD8FUdbMXuu2Ztkt+pd2oA88B14J76phRwEVgGGsAZ9XfmLs4CK8BfoF9N32Dbag8lIhaBa8BjdToDmNza7qfNF3O3PaYEMAx8LHwZQ+qXgwJ6gLQRF2ogn9Rb1ZhaBYWVZ8OKABHxEHgEPFdfVG4i6ysacvM3pefXD6yrAxVA1ncQQLrodEiz6ngFkPUVA7qZQ9EM/mvAPx4RqBn3Wov4AAAAAElFTkSuQmCC"/>
+                                </button>
                         </td>
                     </tr>
                 `;
@@ -275,6 +290,53 @@
 
     </script>
 
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            // Limpiar el almacenamiento local o realizar cualquier otra acción necesaria para cerrar sesión
+            localStorage.removeItem('token'); // Cambia 'usuario' por la clave que usas para guardar los datos del usuario
+            // Redirigir a la página de inicio de sesión
+            window.location.href = 'login.html'; // Cambia 'login.html' por la URL de tu página de inicio de sesión
+        });
+
+    </script>
+
+    <script>
+        function addStock(productId) {
+            const cantidad = parseInt(prompt("Ingrese la cantidad de stock a agregar:"), 10);
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("Por favor, ingrese una cantidad válida.");
+                return;
+            }
+
+            // Lógica para actualizar el stock del producto
+            fetch(`http://localhost:3000/actualizar-stock`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    pro_id: productId,
+                    cantidad: cantidad
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al actualizar el stock');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(`Stock actualizado: ${data.mensaje}`);
+                    // Aquí puedes actualizar la tabla para reflejar el nuevo stock
+                    fetchProductos(); // Llama a tu función que obtiene los productos nuevamente
+                })
+                .catch(error => {
+                    console.error('Error al agregar stock:', error);
+                    alert('Hubo un problema al agregar el stock. Intenta nuevamente.');
+                });
+        }
+
+    </script>
 </body>
 
 </html>

@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
 
 </head>
 
@@ -104,62 +106,110 @@
         document.getElementById('comprar-btn').addEventListener('click', async () => {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             let total = 0;
-            let recibo = 'Recibo de Compra:\n\n';
+
+            // Verificar si el carrito está vacío
+            if (carrito.length === 0) {
+                alert('El carrito está vacío. Por favor, agrega productos antes de comprar.');
+                return; // Salir si el carrito está vacío
+            }
+
+            const items = []; // Array para almacenar los productos comprados
 
             for (const producto of carrito) {
                 try {
                     const response = await fetch('http://localhost:3000/comprar', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
                             pro_id: producto.id,
-                            cantidad: producto.cantidad
-                        })
+                            cantidad: producto.cantidad,
+                        }),
                     });
 
+                    // Verificar si la respuesta es válida
                     if (!response.ok) {
                         const errorText = await response.text();
-                        alert(`Error al comprar el producto ${producto.nombre}: ${errorText}`);
+                        alert(`Error al comprar el producto "${producto.nombre}": ${errorText}`);
                         continue; // Salta al siguiente producto si hay error
                     }
 
-                    // Si la compra fue exitosa, calcular el precio total y agregar al recibo
+                    // Calcular el precio total y agregar al array de items
                     const precioTotal = producto.precio * producto.cantidad;
                     total += precioTotal;
-
-                    // Agregar al recibo
-                    recibo += `Producto: ${producto.nombre}, Precio Unitario: $${producto.precio.toFixed(2)}, Cantidad: ${producto.cantidad}, Total: $${precioTotal.toFixed(2)}\n`;
+                    items.push([producto.nombre, producto.precio.toFixed(2), producto.cantidad, precioTotal.toFixed(2)]); // Añadir producto a la tabla
 
                 } catch (error) {
                     console.error('Error al hacer la compra:', error);
-                    alert('Hubo un error al realizar la compra.');
+                    alert('Hubo un error al realizar la compra. Intenta nuevamente.');
                 }
             }
 
-            // Mostrar el recibo final
-            recibo += `\nTotal de la compra: $${total.toFixed(2)}`;
+            // Mostrar el recibo final si hay productos comprados
+            if (total > 0) {
+                // Generar el PDF
+                const { jsPDF } = window.jspdf; // Si usaste el CDN
+                const doc = new jsPDF();
 
-            // Generar el PDF
-            const { jsPDF } = window.jspdf; // Si usaste el CDN
-            const doc = new jsPDF();
+                // Título centrado
+                doc.setFontSize(16);
+                const title = 'Recibo de Compra';
+                const titleWidth = doc.getTextWidth(title);
+                const pageWidth = doc.internal.pageSize.getWidth();
+                doc.text(title, (pageWidth - titleWidth) / 2, 10);
 
-            doc.setFontSize(16);
-            doc.text('Recibo de Compra', 10, 10);
+                doc.setFontSize(12);
 
-            doc.setFontSize(12);
-            doc.text(recibo, 10, 30); // Ajusta la posición si es necesario
+                // Usar AutoTable para generar la tabla
+                doc.autoTable({
+                    head: [['Producto', 'Precio Unitario ($)', 'Cantidad', 'Total ($)']],
+                    body: items,
+                    startY: 30, // Iniciar la tabla a partir de la posición vertical 30
+                    styles: {
+                        cellPadding: 5,
+                        tableLineColor: [255, 140, 0], // Color de línea naranja
+                        tableLineWidth: 0.75,
+                        fillColor: [255, 165, 0], // Color de fondo naranja
+                        textColor: [0, 0, 0],
+                    },
+                    headStyles: {
+                        fillColor: [255, 140, 0], // Color de fondo de la cabecera (naranja oscuro)
+                        textColor: [255, 255, 255], // Color del texto de la cabecera (blanco)
+                    },
+                    alternateRowStyles: {
+                        fillColor: [255, 200, 0], // Color alternativo para las filas (naranja claro)
+                    }
+                });
 
-            doc.text(`Total de la compra: $${total.toFixed(2)}`, 10, 40); // Ajusta la posición si es necesario
+                // Agregar total a la tabla
+                doc.autoTable({
+                    startY: doc.autoTable.previous.finalY + 10, // Comenzar después de la tabla anterior
+                    head: [['Total de la compra', '$' + total.toFixed(2)]],
+                    body: [[]],
+                    styles: {
+                        fillColor: [255, 140, 0], // Color de fondo naranja
+                        textColor: [255, 255, 255], // Color del texto (blanco)
+                        fontSize: 12,
+                        cellPadding: 5,
+                    },
+                    margin: { top: 10 },
+                });
 
-            // Guardar el PDF
-            doc.save('recibo_compra.pdf');
+                // Agregar mensaje de agradecimiento
+                const thankYouMessage = "Gracias por su compra!";
+                doc.text(thankYouMessage, (pageWidth - doc.getTextWidth(thankYouMessage)) / 2, doc.autoTable.previous.finalY + 20);
 
+                // Guardar el PDF
+                doc.save('recibo_compra.pdf');
+            } else {
+                alert('No se pudieron procesar las compras. Por favor, intenta nuevamente.');
+            }
+
+            // Vaciar el carrito y recargar la página
             localStorage.removeItem('carrito'); // Vaciar el carrito
             window.location.reload(); // Recargar la página
         });
-
 
     </script>
 </body>
