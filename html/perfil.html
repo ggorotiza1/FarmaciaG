@@ -65,6 +65,10 @@
 
         <!-- Botón de cerrar sesión -->
         <div class="text-center mt-6">
+            <button id="home-btn"
+                class="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition duration-200">
+                Inicio
+            </button>
             <button id="logout-btn"
                 class="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition duration-200">
                 Cerrar Sesión
@@ -292,12 +296,16 @@
 
     <script>
         document.getElementById('logout-btn').addEventListener('click', () => {
-            // Limpiar el almacenamiento local o realizar cualquier otra acción necesaria para cerrar sesión
-            localStorage.removeItem('token'); // Cambia 'usuario' por la clave que usas para guardar los datos del usuario
-            // Redirigir a la página de inicio de sesión
-            window.location.href = 'login.html'; // Cambia 'login.html' por la URL de tu página de inicio de sesión
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
         });
 
+    </script>
+
+    <script>
+        document.getElementById('home-btn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
     </script>
 
     <script>
