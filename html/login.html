@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Farmacia G</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .text-gradient {
+            background: linear-gradient(90deg, #f97316, #f43f5e);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-r from-orange-50 via-white to-orange-100 text-gray-800">
+    <div class="min-h-screen flex flex-col justify-center items-center">
+        <h2 class="text-4xl font-bold mb-6 text-gradient">Iniciar Sesión</h2>
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label for="username" class="block text-lg font-medium text-gray-700">Correo</label>
+                    <input type="text" id="username" name="username" required
+                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-lg font-medium text-gray-700">Contraseña</label>
+                    <input type="password" id="password" name="password" required
+                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                </div>
+                <button type="submit"
+                    class="w-full bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-all duration-300">Iniciar
+                    sesión</button>
+            </form>
+            <p id="loginMessage" class="text-red-500 mt-4"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                if (response.ok) {
+                    const { token } = await response.json();
+                    localStorage.setItem('token', token);  // Guarda el token
+                    window.location.href = 'perfil.html';  // Redirecciona al perfil
+                } else {
+                    document.getElementById('loginMessage').textContent = 'Credenciales incorrectas';
+                }
+            } catch (error) {
+                document.getElementById('loginMessage').textContent = 'Error en el inicio de sesión';
+                console.error('Error en el inicio de sesión', error);
+            }
+        });
+    </script>
+
+    <script>
+        window.onload = function () {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = 'perfil.html';  // Redirige al login si no hay token
+            }
+        };
+
+    </script>
+</body>
+
+</html>

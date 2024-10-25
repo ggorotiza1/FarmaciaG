@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Farmacia G</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .text-gradient {
+            background: linear-gradient(90deg, #f97316, #f43f5e);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .button-glow {
+            box-shadow: 0 0 10px 2px rgba(249, 115, 22, 0.8);
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .profile-photo {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-info {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl font-bold text-gradient">Perfil - Farmacia G</h1>
+        </div>
+    </header>
+
+    <!-- Perfil Section -->
+    <section class="container mx-auto py-8">
+        <h2 class="text-3xl font-bold mb-6 text-center">Información del Usuario</h2>
+
+        <!-- Tarjeta de perfil -->
+        <div class="card flex items-center mx-auto max-w-3xl">
+            <img id="user_foto" class="profile-photo" src="https://via.placeholder.com/100" alt="Foto de perfil">
+            <div class="profile-info">
+                <h3 class="text-xl font-bold" id="user_nombre">Nombre Apellido</h3>
+                <p class="text-gray-600"><strong>Cédula:</strong> <span id="user_cedula">Cédula</span></p>
+                <p class="text-gray-600"><strong>Correo Electrónico:</strong> <span id="user_correo">correo@example.com</span></p>
+                <p class="text-gray-600"><strong>Rol del Usuario:</strong> <span id="user_rol">Rol</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section class="container mx-auto py-8">
+        <h2 class="text-3xl font-bold mb-6">Gestión de Productos</h2>
+
+        <!-- Botón para agregar nuevo producto -->
+        <div class="mb-4 text-right">
+            <button id="add-product-btn"
+                class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded button-glow">
+                Agregar Producto
+            </button>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            ID</th>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Nombre</th>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Descripción</th>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Ruta de la Foto</th>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Precio</th>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Stock</th>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Estado</th>
+                        <th
+                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
+                            Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productos-list"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Modal para agregar o editar productos -->
+    <div id="product-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto mt-20">
+            <h3 id="modal-title" class="text-xl font-bold mb-4">Agregar Producto</h3>
+
+            <form id="product-form">
+                <div class="mb-4">
+                    <label for="pro_nombre" class="block text-gray-700">Nombre del Producto</label>
+                    <input type="text" id="pro_nombre" class="w-full px-4 py-2 border rounded-lg" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="pro_descripcion" class="block text-gray-700">Descripción</label>
+                    <textarea id="pro_descripcion" class="w-full px-4 py-2 border rounded-lg" required></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="pro_ruta" class="block text-gray-700">Ruta de la Foto</label>
+                    <input type="text" id="pro_ruta" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+
+                <div class="mb-4">
+                    <label for="pro_precio" class="block text-gray-700">Precio</label>
+                    <input type="text" id="pro_precio" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+
+                <div class="mb-4">
+                    <label for="pro_stock" class="block text-gray-700">Stock</label>
+                    <input type="number" id="pro_stock" class="w-full px-4 py-2 border rounded-lg" min="0">
+                </div>
+
+                <div class="mb-4">
+                    <label for="pro_estado" class="block text-gray-700">Estado</label>
+                    <select id="pro_estado" class="w-full px-4 py-2 border rounded-lg">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Guardar
+                    </button>
+                    <button type="button" id="cancel-btn"
+                        class="ml-4 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simular la obtención de datos del perfil del usuario
+        async function fetchPerfilUsuario() {
+            try {
+                const response = await fetch('http://localhost:3000/usuarios');
+                const usuarios = await response.json(); // Cambia 'usuario' a 'usuarios'
+                console.log(usuarios[0]); // Muestra el primer usuario en la consola
+
+                // Verificar si hay usuarios y luego asignar el primer usuario
+                if (usuarios.length > 0) {
+                    const usuario = usuarios[0]; // Toma el primer usuario
+
+                    // Asegúrate de que los IDs coincidan con los de tu HTML
+                    const userCedulaElement = document.getElementById('user_cedula'); // Asegúrate de que esto coincida
+                    const userNombreElement = document.getElementById('user_nombre'); // Asegúrate de que esto coincida
+                    const userCorreoElement = document.getElementById('user_correo'); // Asegúrate de que esto coincida
+                    const userRolElement = document.getElementById('user_rol'); // Asegúrate de que esto coincida
+                    const userFotoElement = document.getElementById('user_foto'); // Asegúrate de que esto coincida
+
+                    // Asigna los valores correspondientes
+                    userCedulaElement.innerHTML = usuario.user_cedula;
+                    userNombreElement.innerHTML = usuario.user_nombre + " " + usuario.user_apellido;
+                    userCorreoElement.innerHTML = usuario.user_correo;
+                    userRolElement.innerHTML = usuario.user_rol;
+                    userFotoElement.src = usuario['user_foto-url'];
+                } else {
+                    console.error('No se encontraron usuarios');
+                }
+            } catch (error) {
+                console.error('Error al obtener el perfil del usuario:', error);
+            }
+        }
+
+        // Cargar el perfil del usuario al cargar la página
+        document.addEventListener('DOMContentLoaded', fetchPerfilUsuario);
+    </script>
+
+
+    <script>
+        const productosList = document.getElementById('productos-list');
+        const productModal = document.getElementById('product-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const addProductBtn = document.getElementById('add-product-btn');
+        const productForm = document.getElementById('product-form');
+        const cancelBtn = document.getElementById('cancel-btn');
+        let isEditing = false;
+        let currentProductId = null;
+
+        // Fetch de productos desde la API
+        async function fetchProductos() {
+            try {
+                const response = await fetch('http://localhost:3000/productos');
+                const productos = await response.json();
+                renderProductos(productos);
+            } catch (error) {
+                console.error('Error al obtener los productos:', error);
+            }
+        }
+
+        // Renderizar productos en la tabla
+        function renderProductos(productos) {
+            productosList.innerHTML = '';
+            productos.forEach(producto => {
+                productosList.innerHTML += `
+                    <tr>
+                        <td class="px-6 py-4 border-b">${producto.pro_id}</td>
+                        <td class="px-6 py-4 border-b">${producto.pro_nombre}</td>
+                        <td class="px-6 py-4 border-b">${producto.pro_descripcion}</td>
+                        <td class="px-6 py-4 border-b"><img src="${producto.pro_ruta}" class="w-12 h-12"></td>
+                        <td class="px-6 py-4 border-b">$${producto.pro_precio}</td>
+                        <td class="px-6 py-4 border-b">${producto.pro_stock}</td>
+                        <td class="px-6 py-4 border-b">${producto.pro_estado}</td>
+                        <td class="px-6 py-4 border-b">
+                            <button onclick="editProduct(${producto.pro_id})" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded">
+                               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAbtJREFUSEvFlT1PFFEUhp+30VhqjBQYFRK/ENTSBCIQm00s+Af+BWsbGhpp/Q/WdsZKjZ+9iYUGYTFgIqGwEIXGlz2bs2QYlmVnyMZpJnNz53nPx3vuFQN+NGA+xxawfQK4D5wCnkn6Wwx6n4DtOeAxcK1HZv+AB5Ke2j4NvARu5/4vwB1Jvzr/lwXWgOE+4WcSfgtYB34DV4GPwKykneCUBdxelHqWzvbZhE8AS8A9YCvXbgIPJT2pJWD7HPAauJ6Zfmt9zwARcZRrHFiQNF9ZwPYQ8CrhPzLqy0CU9g9wBdgAJiTFu/8SJfwDMJo1nwTCMSE4ltlEL+5KWj6syV17YDsa/6YIl7SaLnoL3OiIxnovmx4QSPh74GIRUoIHdDpFG5Je9JVBBfikpHXbjRy2GLr209OmtleAS8D3jLDZxaIzAQ+Y7W3gZNHmRwm0SwaczwjD/2HRqPnXbOjPTrS2D5S4L4GIKCN/l9MaR0LUfA+eGdQTKB0dAZ+StFk+UmpnUAB9jqntBq+VQdW7onIGgxCIgblQFVza35Q0ctgcxIWzmE6po/Opdao+kvS8q0Ad4lH/HPtO/u8Cu0VT+hkStBhWAAAAAElFTkSuQmCC"/>
+                            </button>
+                            <button onclick="deleteProduct(${producto.pro_id})" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAALFJREFUSEvtlVEKAjEMRGfuIgjudTyOn4KX8ToueJosFQt1t83U1uLP7l9JkzeT0A0x+OPg+nABZnYGcAVwLAh5AriQvJeEKsADwEm4nElOrQALiSSzQszMjb9yPXWqgIpvADGhd/Cp4w8HwwFReY311KV3v3l4PwWsFapzCq9yoAp2t2gHbN7Vty3ZZyB/Td0tUoQWQM2iWXOzi6f0ksOqvAE4KPXveHF1/nfpV6p3ry3epM4ZCBVpxgAAAABJRU5ErkJggg=="/>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Mostrar el modal para agregar producto
+        addProductBtn.addEventListener('click', () => {
+            modalTitle.textContent = 'Agregar Producto';
+            productModal.classList.remove('hidden');
+        });
+
+        // Ocultar modal al cancelar
+        cancelBtn.addEventListener('click', () => {
+            productModal.classList.add('hidden');
+            productForm.reset();
+        });
+
+        // Cargar productos al cargar la página
+        document.addEventListener('DOMContentLoaded', fetchProductos);
+    </script>
+
+    <script>
+        window.onload = function () {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';  // Redirige al login si no hay token
+            } else {
+                // Hacer la petición para obtener los productos solo si el usuario está autenticado
+                fetchProductos();
+            }
+        };
+
+    </script>
+
+</body>
+
+</html>

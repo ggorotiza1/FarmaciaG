@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - Farmacia G</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+
+<body class="bg-gradient-to-r from-orange-50 via-white to-orange-100 text-gray-800">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 bg-white bg-opacity-90 backdrop-blur-lg shadow-md z-50">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <h1 class="text-4xl font-extrabold text-gradient cursor-pointer"
+                onclick="window.location.href='index.html'">Farmacia G</h1>
+            <nav class="space-x-8 text-lg font-semibold">
+                <a href="index.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Inicio</a>
+                <a href="productos.html"
+                    class="text-gray-700 hover:text-orange-500 transition duration-300">Productos</a>
+                <a href="carrito.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Carrito</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Carrito Section -->
+    <section class="py-12">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold mb-6 text-gradient">Tu Carrito de Compras</h2>
+            <div id="carrito-items" class="mb-6"></div>
+            <div class="flex justify-between text-lg font-semibold">
+                <span>Total:</span>
+                <span id="total-price">$0.00</span>
+            </div>
+            <button id="comprar-btn"
+                class="mt-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">Comprar</button>
+        </div>
+    </section>
+
+    <script>
+        // Función para cargar los artículos del carrito
+        function cargarCarrito() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const carritoItemsContainer = document.getElementById('carrito-items');
+            carritoItemsContainer.innerHTML = ''; // Limpiar el contenedor
+
+            let total = 0;
+
+            carrito.forEach((producto, index) => {
+                const itemHTML = `
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold">${producto.nombre}</h3>
+                            <p class="text-gray-600">Precio: $${producto.precio.toFixed(2)}</p>
+                            <label for="cantidad-${index}" class="mr-2">Cantidad:</label>
+                            <input type="number" id="cantidad-${index}" value="${producto.cantidad}" min="1" class="w-16 border rounded p-1" onchange="actualizarSubtotal(${index}, ${producto.precio})">
+                        </div>
+                        <div>
+                            <span class="text-lg font-bold" id="subtotal-${index}">$${(producto.precio * producto.cantidad).toFixed(2)}</span>
+                            <button onclick="eliminarProducto(${index})" class="text-red-500 hover:text-red-700 ml-4">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+                carritoItemsContainer.innerHTML += itemHTML;
+                total += producto.precio * producto.cantidad;
+            });
+
+            // Actualizar el total
+            document.getElementById('total-price').innerText = `$${total.toFixed(2)}`;
+        }
+
+        // Función para actualizar el subtotal y total al cambiar la cantidad
+        function actualizarSubtotal(index, precio) {
+            const cantidadInput = document.getElementById(`cantidad-${index}`);
+            const cantidad = parseInt(cantidadInput.value) || 1; // Asegurarse de que la cantidad sea al menos 1
+            const subtotal = precio * cantidad;
+            document.getElementById(`subtotal-${index}`).innerText = `$${subtotal.toFixed(2)}`;
+
+            // Actualizar el carrito en localStorage
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            carrito[index].cantidad = cantidad; // Actualizar cantidad en carrito
+            localStorage.setItem('carrito', JSON.stringify(carrito)); // Guardar cambios
+
+            // Actualizar total general
+            cargarCarrito();
+        }
+
+        // Función para eliminar un producto del carrito
+        function eliminarProducto(index) {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            carrito.splice(index, 1); // Eliminar el producto
+            localStorage.setItem('carrito', JSON.stringify(carrito)); // Guardar cambios
+            cargarCarrito(); // Recargar el carrito
+        }
+
+        // Llamar a la función para cargar el carrito cuando se carga la página
+        window.onload = cargarCarrito;
+
+
+        document.getElementById('comprar-btn').addEventListener('click', async () => {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            let total = 0;
+            let recibo = 'Recibo de Compra:\n\n';
+
+            for (const producto of carrito) {
+                try {
+                    const response = await fetch('http://localhost:3000/comprar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            pro_id: producto.id,
+                            cantidad: producto.cantidad
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        alert(`Error al comprar el producto ${producto.nombre}: ${errorText}`);
+                        continue; // Salta al siguiente producto si hay error
+                    }
+
+                    // Si la compra fue exitosa, calcular el precio total y agregar al recibo
+                    const precioTotal = producto.precio * producto.cantidad;
+                    total += precioTotal;
+
+                    // Agregar al recibo
+                    recibo += `Producto: ${producto.nombre}, Precio Unitario: $${producto.precio.toFixed(2)}, Cantidad: ${producto.cantidad}, Total: $${precioTotal.toFixed(2)}\n`;
+
+                } catch (error) {
+                    console.error('Error al hacer la compra:', error);
+                    alert('Hubo un error al realizar la compra.');
+                }
+            }
+
+            // Mostrar el recibo final
+            recibo += `\nTotal de la compra: $${total.toFixed(2)}`;
+
+            // Generar el PDF
+            const { jsPDF } = window.jspdf; // Si usaste el CDN
+            const doc = new jsPDF();
+
+            doc.setFontSize(16);
+            doc.text('Recibo de Compra', 10, 10);
+
+            doc.setFontSize(12);
+            doc.text(recibo, 10, 30); // Ajusta la posición si es necesario
+
+            doc.text(`Total de la compra: $${total.toFixed(2)}`, 10, 40); // Ajusta la posición si es necesario
+
+            // Guardar el PDF
+            doc.save('recibo_compra.pdf');
+
+            localStorage.removeItem('carrito'); // Vaciar el carrito
+            window.location.reload(); // Recargar la página
+        });
+
+
+    </script>
+</body>
+
+</html>

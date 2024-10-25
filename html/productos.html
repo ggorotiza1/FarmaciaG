@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Farmacia G</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
+    <style>
+        .text-gradient {
+            background: linear-gradient(90deg, #f97316, #f43f5e);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .button-glow {
+            box-shadow: 0 0 10px 2px rgba(249, 115, 22, 0.8);
+        }
+
+        .neon-border {
+            border: 2px solid transparent;
+            background: linear-gradient(90deg, #f97316, #f43f5e);
+            background-clip: padding-box, border-box;
+            background-origin: border-box;
+        }
+
+        .btn-hover:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s;
+        }
+
+        #carrito-count {
+            position: absolute;
+            top: -10px;
+            /* Ajusta la posición vertical */
+            right: -10px;
+            /* Ajusta la posición horizontal */
+            background-color: rgb(252, 105, 7);
+            /* Color de fondo */
+            color: white;
+            /* Color del texto */
+            border-radius: 50%;
+            padding: 2px;
+            font-size: 12px;
+            height: 20px;
+            width: 20px;
+            display: flex;
+            /* Para centrar el texto */
+            justify-content: center;
+            /* Centrar horizontalmente */
+            align-items: center;
+            /* Centrar verticalmente */
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-r from-orange-50 via-white to-orange-100 text-gray-800">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 bg-white bg-opacity-90 backdrop-blur-lg shadow-md z-50">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <!-- Logo -->
+            <h1 class="text-4xl font-extrabold text-gradient cursor-pointer"
+                onclick="window.location.href='index.html'">Farmacia G</h1>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="block md:hidden focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+
+            <!-- Navbar Links -->
+            <nav id="menu" class="hidden md:flex space-x-8 text-lg font-semibold">
+                <a href="index.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Inicio</a>
+                <a href="servicios.html"
+                    class="text-gray-700 hover:text-orange-500 transition duration-300">Servicios</a>
+                <a href="nosotros.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Nosotros</a>
+                <a href="contacto.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Contacto</a>
+                <a id="loginLink" href="login.html"
+                    class="text-gray-700 hover:text-orange-500 transition duration-300">Iniciar Sesión</a>
+                <a href="carrito.html" class="text-gray-700 hover:text-orange-500 transition duration-300 relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.4 5H19m-12 0a1 1 0 100 2 1 1 0 000-2zm10 0a1 1 0 100 2 1 1 0 000-2z" />
+                    </svg>
+                    <span id="carrito-count"
+                        class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full px-1 hidden"></span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <script>
+        // Script to toggle mobile menu
+        const menuBtn = document.getElementById('menu-btn');
+        const menu = document.getElementById('menu');
+
+        menuBtn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- Productos Section -->
+    <section class="py-12">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-6 text-gradient">Nuestros Productos</h2>
+            <p class="text-lg text-gray-600 max-w-xl mx-auto mb-12">Encuentra una amplia variedad de productos
+                farmacéuticos, de cuidado personal y más.</p>
+
+            <!-- Productos Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="productos-grid">
+                <!-- Aquí se cargarán los productos dinámicamente -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-10">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-bold mb-6 text-gradient">Farmacia G</h3>
+            <p class="text-gray-400 mb-6">Innovación en salud para tu bienestar diario.</p>
+            <p class="text-sm text-gray-500">&copy; 2024 Farmacia G. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // Función para cargar los productos desde el servidor
+        async function cargarProductos() {
+            try {
+                const response = await fetch('http://localhost:3000/productos');
+                const productos = await response.json();
+
+                const productosGrid = document.getElementById('productos-grid');
+                productosGrid.innerHTML = ''; // Limpiar el contenedor
+
+                // Iterar sobre los productos y generar el HTML dinámicamente
+                productos.forEach(producto => {
+                    const productoHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-lg neon-border hover:shadow-2xl transition-all duration-300">
+                    <img src="${producto.pro_ruta}" alt="${producto.pro_nombre}" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-2xl font-bold mb-2">${producto.pro_nombre}</h3>
+                    <p class="text-black-600 mb-4">${producto.pro_descripcion}</p>
+                    <p class="text-black-600 mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
+                    <p class="text-black-600 mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
+                    <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
+                        onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio})">Comprar</button>
+                </div>
+                `;
+                    productosGrid.innerHTML += productoHTML;
+                });
+            } catch (error) {
+                console.error('Error al cargar los productos:', error);
+            }
+        }
+
+        // Función para agregar un producto al carrito
+        function agregarAlCarrito(productId, productName, productPrice) {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const producto = {
+                id: productId,
+                nombre: productName,
+                precio: productPrice,
+                cantidad: 1
+            };
+            carrito.push(producto);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            alert(`${productName} ha sido agregado al carrito.`);
+        }
+
+        // Llamar a la función para cargar los productos cuando se cargue la página
+        window.onload = cargarProductos;
+    </script>
+
+    <script>
+        // Verificar si hay un token en localStorage
+        function verificarToken() {
+            const token = localStorage.getItem('token'); // Cambia 'token' por la clave que estés usando
+            const loginLink = document.getElementById('loginLink');
+
+            if (token) {
+                // Si hay token, cambia "Iniciar Sesión" por "Perfil"
+                loginLink.innerHTML = 'Perfil';
+                loginLink.href = 'perfil.html'; // Cambia la ruta a la página de perfil
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        document.addEventListener('DOMContentLoaded', verificarToken);
+    </script>
+
+    <script>
+        // Función para actualizar el contador del carrito
+        function actualizarContadorCarrito() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const contador = carrito.length;
+            console.log(contador);
+            const contadorElemento = document.getElementById('carrito-count');
+
+            if (contador > 0) {
+                contadorElemento.innerText = contador; // Mostrar el número de artículos
+                contadorElemento.classList.remove('hidden'); // Asegurarse de que el contador sea visible
+            } else {
+                contadorElemento.innerText = ''; // Si no hay artículos, vaciar el contador
+                contadorElemento.classList.add('hidden'); // Ocultar si está vacío
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        window.onload = function () {
+            cargarProductos(); // Asegúrate de cargar los productos
+            actualizarContadorCarrito(); // Actualizar el contador del carrito
+        };
+    </script>
+
+</body>
+
+</html>
