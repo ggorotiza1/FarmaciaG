@@ -12,7 +12,7 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Middleware para permitir el acceso desde el frontend (CORS)
+// Middleware para permitir el acceso desde el frontend (CORS)s
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
