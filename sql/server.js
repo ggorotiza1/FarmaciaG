@@ -30,6 +30,17 @@ app.get('/productos', async (req, res) => {
   }
 });
 
+// Ruta para obtener los productos
+// app.get('/productos-disponibles', async (req, res) => {
+//   try {
+//     const result = await pool.query('SELECT pro_id, pro_nombre, pro_descripcion, pro_ruta, pro_estado, pro_precio, pro_stock FROM public.productos where pro_estado="Activo"');
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error('Error al obtener los productos', err);
+//     res.status(500).send('Error al obtener los productos');
+//   }
+// });
+
 // Ruta para obtener los usuarios
 app.get('/usuarios', async (req, res) => {
   try {

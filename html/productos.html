@@ -7,6 +7,8 @@
     <title>Productos - Farmacia G</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
+    <link href="/css/tailwind.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .text-gradient {
             background: linear-gradient(90deg, #f97316, #f43f5e);
@@ -161,17 +163,27 @@
 
         // Función para agregar un producto al carrito
         function agregarAlCarrito(productId, productName, productPrice) {
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            const producto = {
-                id: productId,
-                nombre: productName,
-                precio: productPrice,
-                cantidad: 1
-            };
-            carrito.push(producto);
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            alert(`${productName} ha sido agregado al carrito.`);
-        }
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const producto = {
+        id: productId,
+        nombre: productName,
+        precio: productPrice,
+        cantidad: 1
+    };
+    carrito.push(producto);
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+
+    // Usar SweetAlert2 para mostrar el mensaje
+    Swal.fire({
+        title: '¡Producto agregado!',
+        text: `${productName} ha sido agregado al carrito.`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        timer: 2000,
+        timerProgressBar: true
+    });
+}
+
 
         // Llamar a la función para cargar los productos cuando se cargue la página
         window.onload = cargarProductos;
@@ -210,7 +222,7 @@
                 contadorElemento.classList.add('hidden'); // Ocultar si está vacío
             }
         }
-
+ 
         // Llamar a la función al cargar la página
         window.onload = function () {
             cargarProductos(); // Asegúrate de cargar los productos
