@@ -34,18 +34,6 @@ app.get('/productos', async (req, res) => {
   }
 });
 
-
-// Ruta para obtener los productos
-// app.get('/productos-disponibles', async (req, res) => {
-//   try {
-//     const result = await pool.query('SELECT pro_id, pro_nombre, pro_descripcion, pro_ruta, pro_estado, pro_precio, pro_stock FROM public.productos where pro_estado="Activo"');
-//     res.json(result.rows);
-//   } catch (err) {
-//     console.error('Error al obtener los productos', err);
-//     res.status(500).send('Error al obtener los productos');
-//   }
-// });
-
 // Ruta para obtener los usuarios
 app.get('/usuarios', async (req, res) => {
   try {
@@ -142,25 +130,25 @@ app.post('/actualizar-stock', async (req, res) => {
 
   // Validación básica
   if (!pro_id || !cantidad) {
-      return res.status(400).json({ mensaje: 'Faltan datos: pro_id y cantidad son requeridos.' });
+    return res.status(400).json({ mensaje: 'Faltan datos: pro_id y cantidad son requeridos.' });
   }
 
   try {
-      // Actualizar el stock en la base de datos
-      const query = 'UPDATE public.productos SET pro_stock = pro_stock + $1 WHERE pro_id = $2 RETURNING *';
-      const values = [cantidad, pro_id];
-      
-      const result = await pool.query(query, values);
-      
-      // Verifica si se actualizó algún registro
-      if (result.rowCount === 0) {
-          return res.status(404).json({ mensaje: 'Producto no encontrado.' });
-      }
+    // Actualizar el stock en la base de datos
+    const query = 'UPDATE public.productos SET pro_stock = pro_stock + $1 WHERE pro_id = $2 RETURNING *';
+    const values = [cantidad, pro_id];
 
-      return res.json({ mensaje: 'Stock actualizado con éxito.', producto: result.rows[0] });
+    const result = await pool.query(query, values);
+
+    // Verifica si se actualizó algún registro
+    if (result.rowCount === 0) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado.' });
+    }
+
+    return res.json({ mensaje: 'Stock actualizado con éxito.', producto: result.rows[0] });
   } catch (error) {
-      console.error('Error al actualizar el stock:', error);
-      return res.status(500).json({ mensaje: 'Error al actualizar el stock. Intenta nuevamente.' });
+    console.error('Error al actualizar el stock:', error);
+    return res.status(500).json({ mensaje: 'Error al actualizar el stock. Intenta nuevamente.' });
   }
 });
 

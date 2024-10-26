@@ -37,8 +37,8 @@
         }
 
         .table-header {
-            background-color: #f97316; /* Color de fondo para el encabezado */
-            color: white; /* Color de texto blanco */
+            background-color: #f97316;
+            color: white;
         }
     </style>
 </head>
@@ -192,25 +192,21 @@
     </footer>
 
     <script>
-        // Simular la obtención de datos del perfil del usuario
         async function fetchPerfilUsuario() {
             try {
                 const response = await fetch('http://localhost:3000/usuarios');
-                const usuarios = await response.json(); // Cambia 'usuario' a 'usuarios'
-                console.log(usuarios[0]); // Muestra el primer usuario en la consola
+                const usuarios = await response.json();
+                localStorage.setItem('user', JSON.stringify(usuarios[0]));
 
-                // Verificar si hay usuarios y luego asignar el primer usuario
                 if (usuarios.length > 0) {
-                    const usuario = usuarios[0]; // Toma el primer usuario
+                    const usuario = usuarios[0];
 
-                    // Asegúrate de que los IDs coincidan con los de tu HTML
-                    const userCedulaElement = document.getElementById('user_cedula'); // Asegúrate de que esto coincida
-                    const userNombreElement = document.getElementById('user_nombre'); // Asegúrate de que esto coincida
-                    const userCorreoElement = document.getElementById('user_correo'); // Asegúrate de que esto coincida
-                    const userRolElement = document.getElementById('user_rol'); // Asegúrate de que esto coincida
-                    const userFotoElement = document.getElementById('user_foto'); // Asegúrate de que esto coincida
+                    const userCedulaElement = document.getElementById('user_cedula');
+                    const userNombreElement = document.getElementById('user_nombre');
+                    const userCorreoElement = document.getElementById('user_correo');
+                    const userRolElement = document.getElementById('user_rol');
+                    const userFotoElement = document.getElementById('user_foto');
 
-                    // Asigna los valores correspondientes
                     userCedulaElement.innerHTML = usuario.user_cedula;
                     userNombreElement.innerHTML = usuario.user_nombre + " " + usuario.user_apellido;
                     userCorreoElement.innerHTML = usuario.user_correo;
@@ -224,7 +220,6 @@
             }
         }
 
-        // Cargar el perfil del usuario al cargar la página
         document.addEventListener('DOMContentLoaded', fetchPerfilUsuario);
     </script>
 
@@ -239,7 +234,6 @@
         let isEditing = false;
         let currentProductId = null;
 
-        // Fetch de productos desde la API
         async function fetchProductos() {
             try {
                 const response = await fetch('http://localhost:3000/productos');
@@ -250,7 +244,6 @@
             }
         }
 
-        // Renderizar productos en la tabla
         function renderProductos(productos) {
             productosList.innerHTML = '';
             productos.forEach(producto => {
@@ -279,19 +272,16 @@
             });
         }
 
-        // Mostrar el modal para agregar producto
         addProductBtn.addEventListener('click', () => {
             modalTitle.textContent = 'Agregar Producto';
             productModal.classList.remove('hidden');
         });
 
-        // Ocultar modal al cancelar
         cancelBtn.addEventListener('click', () => {
             productModal.classList.add('hidden');
             productForm.reset();
         });
 
-        // Cargar productos al cargar la página
         document.addEventListener('DOMContentLoaded', fetchProductos);
     </script>
 
@@ -299,9 +289,8 @@
         window.onload = function () {
             const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = 'login.html';  // Redirige al login si no hay token
+                window.location.href = 'login.html';
             } else {
-                // Hacer la petición para obtener los productos solo si el usuario está autenticado
                 fetchProductos();
             }
         };
@@ -311,6 +300,7 @@
     <script>
         document.getElementById('logout-btn').addEventListener('click', () => {
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
             window.location.href = 'login.html';
         });
     </script>
@@ -329,7 +319,6 @@
                 return;
             }
 
-            // Lógica para actualizar el stock del producto
             fetch(`http://localhost:3000/actualizar-stock`, {
                 method: 'POST',
                 headers: {
@@ -348,8 +337,7 @@
                 })
                 .then(data => {
                     alert(`Stock actualizado: ${data.mensaje}`);
-                    // Aquí puedes actualizar la tabla para reflejar el nuevo stock
-                    fetchProductos(); // Llama a tu función que obtiene los productos nuevamente
+                    fetchProductos();
                 })
                 .catch(error => {
                     console.error('Error al agregar stock:', error);

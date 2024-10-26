@@ -75,11 +75,10 @@
     </footer>
 
     <script>
-        // Función para cargar los artículos del carrito
         function cargarCarrito() {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             const carritoItemsContainer = document.getElementById('carrito-items');
-            carritoItemsContainer.innerHTML = ''; // Limpiar el contenedor
+            carritoItemsContainer.innerHTML = '';
 
             let total = 0;
 
@@ -116,179 +115,160 @@
 
             });
 
-            // Actualizar el total
             document.getElementById('total-price').innerText = `$${total.toFixed(2)}`;
         }
 
-        // Función para actualizar el subtotal y total al cambiar la cantidad
         function actualizarSubtotal(index, precio) {
             const cantidadInput = document.getElementById(`cantidad-${index}`);
-            const cantidad = parseInt(cantidadInput.value) || 1; // Asegurarse de que la cantidad sea al menos 1
+            const cantidad = parseInt(cantidadInput.value) || 1;
             const subtotal = precio * cantidad;
             document.getElementById(`subtotal-${index}`).innerText = `$${subtotal.toFixed(2)}`;
 
-            // Actualizar el carrito en localStorage
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            carrito[index].cantidad = cantidad; // Actualizar cantidad en carrito
-            localStorage.setItem('carrito', JSON.stringify(carrito)); // Guardar cambios
+            carrito[index].cantidad = cantidad;
+            localStorage.setItem('carrito', JSON.stringify(carrito));
 
-            // Actualizar total general
             cargarCarrito();
         }
 
-        // Función para eliminar un producto del carrito
         function eliminarProducto(index) {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            carrito.splice(index, 1); // Eliminar el producto
-            localStorage.setItem('carrito', JSON.stringify(carrito)); // Guardar cambios
-            cargarCarrito(); // Recargar el carrito
+            carrito.splice(index, 1);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            cargarCarrito();
         }
 
-        // Llamar a la función para cargar el carrito cuando se carga la página
         window.onload = cargarCarrito;
 
         document.getElementById('comprar-btn').addEventListener('click', async () => {
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    let total = 0;
-    let subtotal = 0;
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            let total = 0;
+            let subtotal = 0;
 
-    // Verificar si el carrito está vacío
-    if (carrito.length === 0) {
-        alert('El carrito está vacío. Por favor, agrega productos antes de comprar.');
-        return; // Salir si el carrito está vacío
-    }
+            const user = JSON.parse(localStorage.getItem('user'));
 
-    const items = []; // Array para almacenar los productos comprados
-
-    for (const producto of carrito) {
-        try {
-            const response = await fetch('http://localhost:3000/comprar', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    pro_id: producto.id,
-                    cantidad: producto.cantidad,
-                }),
-            });
-
-            // Verificar si la respuesta es válida
-            if (!response.ok) {
-                const errorText = await response.text();
-                alert(`Error al comprar el producto "${producto.nombre}": ${errorText}`);
-                continue; // Salta al siguiente producto si hay error
+            if (carrito.length === 0) {
+                alert('El carrito está vacío. Por favor, agrega productos antes de comprar.');
+                return;
             }
 
-            // Calcular el precio total y agregar al array de items
-            const precioTotal = producto.precio * producto.cantidad;
-            subtotal += precioTotal; // Acumular subtotal
-            total += precioTotal;
-            items.push([producto.nombre, producto.precio.toFixed(2), producto.cantidad, precioTotal.toFixed(2)]); // Añadir producto a la tabla
+            const items = [];
 
-        } catch (error) {
-            console.error('Error al hacer la compra:', error);
-            alert('Hubo un error al realizar la compra. Intenta nuevamente.');
-        }
-    }
+            for (const producto of carrito) {
+                try {
+                    const response = await fetch('http://localhost:3000/comprar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            pro_id: producto.id,
+                            cantidad: producto.cantidad,
+                        }),
+                    });
 
-    // Calcular IVA
-    const iva = subtotal * 0.15; // 15% de IVA
-    total += iva; // Sumar IVA al total
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        alert(`Error al comprar el producto "${producto.nombre}": ${errorText}`);
+                        continue;
+                    }
 
-    // Mostrar el recibo final si hay productos comprados
-    if (total > 0) {
-        // Generar el PDF
-        const { jsPDF } = window.jspdf; // Si usaste el CDN
-        const doc = new jsPDF();
+                    const precioTotal = producto.precio * producto.cantidad;
+                    subtotal += precioTotal;
+                    total += precioTotal;
+                    items.push([producto.nombre, producto.precio.toFixed(2), producto.cantidad, precioTotal.toFixed(2)]); // Añadir producto a la tabla
 
-        // Establecer un fondo
-        doc.setFillColor(255, 255, 255);
-        doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+                } catch (error) {
+                    console.error('Error al hacer la compra:', error);
+                    alert('Hubo un error al realizar la compra. Intenta nuevamente.');
+                }
+            }
 
-        // Encabezado
-        doc.setFontSize(22);
-        doc.setTextColor('#f97316'); // Color del título
-        const title = 'Farmacia G';
-        const titleWidth = doc.getTextWidth(title);
-        const pageWidth = doc.internal.pageSize.getWidth();
-        doc.text(title, (pageWidth - titleWidth) / 2, 30);
+            const iva = subtotal * 0.15;
+            total += iva;
 
-        // Subtítulo
-        doc.setFontSize(18);
-        doc.setTextColor('#333'); // Color oscuro para el subtítulo
-        doc.text('Recibo de Compra', (pageWidth - doc.getTextWidth('Recibo de Compra')) / 2, 40);
+            if (total > 0) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
 
-        // Fecha de compra
-        doc.setFontSize(12);
-        doc.setTextColor('#666'); // Color gris para la fecha
-        const fechaCompra = new Date().toLocaleString();
-        doc.text(`Fecha: ${fechaCompra}`, 10, 60);
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
 
-        // Usar AutoTable para generar la tabla
-        doc.autoTable({
-            head: [['Producto', 'Precio Unitario ($)', 'Cantidad', 'Total ($)']],
-            body: items,
-            startY: 70, // Iniciar la tabla a partir de la posición vertical 70
-            styles: {
-                cellPadding: 5,
-                tableLineColor: [249, 115, 22], // Color de línea naranja
-                tableLineWidth: 1,
-                fillColor: [255, 255, 255], // Color de fondo blanco
-                textColor: [0, 0, 0],
-                fontSize: 12,
-            },
-            headStyles: {
-                fillColor: [249, 115, 22], // Color de fondo de la cabecera
-                textColor: [255, 255, 255], // Color del texto de la cabecera
-                fontSize: 14,
-            },
-            alternateRowStyles: {
-                fillColor: [240, 240, 240], // Color alternativo para las filas
-            },
-            margin: { top: 10 },
+                doc.setFontSize(22);
+                doc.setTextColor('#f97316');
+                const title = 'Farmacia G';
+                const titleWidth = doc.getTextWidth(title);
+                const pageWidth = doc.internal.pageSize.getWidth();
+                doc.text(title, (pageWidth - titleWidth) / 2, 30);
+
+                doc.setFontSize(18);
+                doc.setTextColor('#333');
+                doc.text('Recibo de Compra', (pageWidth - doc.getTextWidth('Recibo de Compra')) / 2, 40);
+
+                doc.setFontSize(12);
+                doc.setTextColor('#666');
+                doc.text(`Nombre: ${user.user_nombre} ${user.user_apellido}`, 10, 60);
+                doc.text(`Cédula: ${user.user_cedula}`, 10, 70);
+                doc.text(`Correo: ${user.user_correo}`, 10, 80);
+
+                const fechaCompra = new Date().toLocaleString();
+                doc.text(`Fecha: ${fechaCompra}`, 10, 90);
+
+                doc.autoTable({
+                    head: [['Producto', 'Precio Unitario ($)', 'Cantidad', 'Total ($)']],
+                    body: items,
+                    startY: 100,
+                    styles: {
+                        cellPadding: 5,
+                        tableLineColor: [249, 115, 22],
+                        tableLineWidth: 1,
+                        fillColor: [255, 255, 255],
+                        textColor: [0, 0, 0],
+                        fontSize: 12,
+                    },
+                    headStyles: {
+                        fillColor: [249, 115, 22],
+                        textColor: [255, 255, 255],
+                        fontSize: 14,
+                    },
+                    alternateRowStyles: {
+                        fillColor: [240, 240, 240],
+                    },
+                    margin: { top: 10 },
+                });
+
+                const costSummaryStartY = doc.autoTable.previous.finalY + 10;
+
+                doc.setFontSize(12);
+                doc.setTextColor('#333');
+                doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 10, costSummaryStartY);
+                doc.text(`IVA (15%): $${iva.toFixed(2)}`, 10, costSummaryStartY + 10);
+                doc.setFontSize(14);
+                doc.setTextColor('#f97316');
+                doc.text(`Total: $${total.toFixed(2)}`, 10, costSummaryStartY + 20);
+
+                const thankYouMessage = "¡Su salud es nuestra prioridad! Agradecemos su compra.";
+                doc.setFontSize(12);
+                doc.setTextColor('#333');
+                doc.text(thankYouMessage, (pageWidth - doc.getTextWidth(thankYouMessage)) / 2, costSummaryStartY + 40);
+
+                const pageNumber = "Página 1";
+                doc.setFontSize(10);
+                doc.setTextColor('#999');
+                doc.text(pageNumber, 10, doc.internal.pageSize.height - 10);
+
+                doc.setDrawColor(249, 115, 22);
+                doc.line(10, costSummaryStartY + 25, pageWidth - 10, costSummaryStartY + 25);
+
+                doc.save('recibo_compra.pdf');
+            } else {
+                alert('No se pudieron procesar las compras. Por favor, intenta nuevamente.');
+            }
+
+            localStorage.removeItem('carrito');
+            window.location.reload();
         });
 
-        // Agregar resumen de costos
-        const costSummaryStartY = doc.autoTable.previous.finalY + 10; // Comenzar después de la tabla anterior
-
-        // Subtotal
-        doc.setFontSize(12);
-        doc.setTextColor('#333'); // Color oscuro para subtotal
-        doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 10, costSummaryStartY);
-        // IVA
-        doc.text(`IVA (15%): $${iva.toFixed(2)}`, 10, costSummaryStartY + 10);
-        // Total
-        doc.setFontSize(14); // Mayor tamaño para el total
-        doc.setTextColor('#f97316'); // Color para total
-        doc.text(`Total: $${total.toFixed(2)}`, 10, costSummaryStartY + 20);
-
-        // Agregar mensaje de agradecimiento
-        const thankYouMessage = "¡Su salud es nuestra prioridad! Agradecemos su compra.";
-        doc.setFontSize(12);
-        doc.setTextColor('#333'); // Color oscuro para el mensaje
-        doc.text(thankYouMessage, (pageWidth - doc.getTextWidth(thankYouMessage)) / 2, costSummaryStartY + 40);
-
-        // Número de hoja
-        const pageNumber = "Página 1";
-        doc.setFontSize(10);
-        doc.setTextColor('#999'); // Color gris para el número de página
-        doc.text(pageNumber, 10, doc.internal.pageSize.height - 10);
-
-        // Agregar línea divisoria
-        doc.setDrawColor(249, 115, 22);
-        doc.line(10, costSummaryStartY + 25, pageWidth - 10, costSummaryStartY + 25); // Línea divisoria
-
-        // Guardar el PDF
-        doc.save('recibo_compra.pdf');
-    } else {
-        alert('No se pudieron procesar las compras. Por favor, intenta nuevamente.');
-    }
-
-    // Vaciar el carrito y recargar la página
-    localStorage.removeItem('carrito'); // Vaciar el carrito
-    window.location.reload(); // Recargar la página
-});
 
     </script>
 </body>

@@ -59,8 +59,8 @@
 
                 if (response.ok) {
                     const { token } = await response.json();
-                    localStorage.setItem('token', token);  // Guarda el token
-                    window.location.href = 'perfil.html';  // Redirecciona al perfil
+                    localStorage.setItem('token', token);
+                    window.location.href = 'perfil.html';
                 } else {
                     document.getElementById('loginMessage').textContent = 'Credenciales incorrectas';
                 }
@@ -75,7 +75,7 @@
         window.onload = function () {
             const token = localStorage.getItem('token');
             if (token) {
-                window.location.href = 'perfil.html';  // Redirige al login si no hay token
+                window.location.href = 'perfil.html';
             }
         };
 

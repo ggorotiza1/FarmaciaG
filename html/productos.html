@@ -35,24 +35,17 @@
         #carrito-count {
             position: absolute;
             top: -10px;
-            /* Ajusta la posición vertical */
             right: -10px;
-            /* Ajusta la posición horizontal */
             background-color: rgb(252, 105, 7);
-            /* Color de fondo */
             color: white;
-            /* Color del texto */
             border-radius: 50%;
             padding: 2px;
             font-size: 12px;
             height: 20px;
             width: 20px;
             display: flex;
-            /* Para centrar el texto */
             justify-content: center;
-            /* Centrar horizontalmente */
             align-items: center;
-            /* Centrar verticalmente */
         }
     </style>
 </head>
@@ -97,7 +90,6 @@
     </header>
 
     <script>
-        // Script to toggle mobile menu
         const menuBtn = document.getElementById('menu-btn');
         const menu = document.getElementById('menu');
 
@@ -132,16 +124,14 @@
 
 
     <script>
-        // Función para cargar los productos desde el servidor
         async function cargarProductos() {
             try {
                 const response = await fetch('http://localhost:3000/productos');
                 const productos = await response.json();
 
                 const productosGrid = document.getElementById('productos-grid');
-                productosGrid.innerHTML = ''; // Limpiar el contenedor
+                productosGrid.innerHTML = '';
 
-                // Iterar sobre los productos y generar el HTML dinámicamente
                 productos.forEach(producto => {
                     const productoHTML = `
                 <div class="bg-white p-6 rounded-lg shadow-lg neon-border hover:shadow-2xl transition-all duration-300">
@@ -161,7 +151,6 @@
             }
         }
 
-        // Función para agregar un producto al carrito
         function agregarAlCarrito(productId, productName, productPrice, productRuta) {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             const producto = {
@@ -174,7 +163,6 @@
             carrito.push(producto);
             localStorage.setItem('carrito', JSON.stringify(carrito));
 
-            // Usar SweetAlert2 para mostrar el mensaje
             Swal.fire({
                 title: '¡Producto agregado!',
                 text: `${productName} ha sido agregado al carrito.`,
@@ -186,29 +174,24 @@
         }
 
 
-        // Llamar a la función para cargar los productos cuando se cargue la página
         window.onload = cargarProductos;
     </script>
 
     <script>
-        // Verificar si hay un token en localStorage
         function verificarToken() {
-            const token = localStorage.getItem('token'); // Cambia 'token' por la clave que estés usando
+            const token = localStorage.getItem('token');
             const loginLink = document.getElementById('loginLink');
 
             if (token) {
-                // Si hay token, cambia "Iniciar Sesión" por "Perfil"
                 loginLink.innerHTML = 'Perfil';
-                loginLink.href = 'perfil.html'; // Cambia la ruta a la página de perfil
+                loginLink.href = 'perfil.html';
             }
         }
 
-        // Llamar a la función al cargar la página
         document.addEventListener('DOMContentLoaded', verificarToken);
     </script>
 
     <script>
-        // Función para actualizar el contador del carrito
         function actualizarContadorCarrito() {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             const contador = carrito.length;
@@ -216,18 +199,17 @@
             const contadorElemento = document.getElementById('carrito-count');
 
             if (contador > 0) {
-                contadorElemento.innerText = contador; // Mostrar el número de artículos
-                contadorElemento.classList.remove('hidden'); // Asegurarse de que el contador sea visible
+                contadorElemento.innerText = contador;
+                contadorElemento.classList.remove('hidden');
             } else {
-                contadorElemento.innerText = '0'; // Si no hay artículos, vaciar el contador
-                contadorElemento.classList.add('hidden'); // Ocultar si está vacío
+                contadorElemento.innerText = '0';
+                contadorElemento.classList.add('hidden');
             }
         }
 
-        // Llamar a la función al cargar la página
         window.onload = function () {
-            cargarProductos(); // Asegúrate de cargar los productos
-            actualizarContadorCarrito(); // Actualizar el contador del carrito
+            cargarProductos();
+            actualizarContadorCarrito();
         };
     </script>
 
