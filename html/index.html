@@ -77,6 +77,11 @@
                 <a href="contacto.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Contacto</a>
                 <a id="loginLink" href="login.html"
                     class="text-gray-700 hover:text-orange-500 transition duration-300">Iniciar Sesión</a>
+                <div id="userProfile" class="flex items-center space-x-2">
+                    <img id="userPhoto" src="" alt="Foto de perfil" class="w-8 h-8 rounded-full hidden" />
+                    <a id="profileLink" href="perfil.html"
+                        class="text-gray-700 hover:text-orange-500 transition duration-300">Perfil</a>
+                </div>
                 <a href="carrito.html" class="text-gray-700 hover:text-orange-500 transition duration-300 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -161,10 +166,18 @@
         function verificarToken() {
             const token = localStorage.getItem('token');
             const loginLink = document.getElementById('loginLink');
+            const userPhoto = document.getElementById('userPhoto');
+            const profileLink = document.getElementById('profileLink');
 
             if (token) {
-                loginLink.innerHTML = 'Perfil';
-                loginLink.href = 'perfil.html';
+                loginLink.style.display = 'none';
+                profileLink.innerHTML = 'Perfil';
+
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user && user['user_foto-url']) {
+                    userPhoto.src = user['user_foto-url'];
+                    userPhoto.classList.remove('hidden');
+                }
             }
         }
 

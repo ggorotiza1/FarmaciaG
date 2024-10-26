@@ -9,6 +9,7 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         .text-gradient {
@@ -46,6 +47,8 @@
                     class="text-gray-700 hover:text-orange-500 transition duration-300">Servicios</a>
                 <a href="nosotros.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Nosotros</a>
                 <a href="contacto.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Contacto</a>
+                <a id="loginLink" href="login.html"
+                    class="text-gray-700 hover:text-orange-500 transition duration-300">Iniciar Sesión</a>
                 <!-- <a href="carrito.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Carrito</a> -->
             </nav>
         </div>
@@ -133,9 +136,37 @@
 
         function eliminarProducto(index) {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            carrito.splice(index, 1);
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            cargarCarrito();
+            const productoEliminado = carrito[index];
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'No podrás deshacer esta acción.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                timerProgressBar: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    carrito.splice(index, 1);
+                    localStorage.setItem('carrito', JSON.stringify(carrito));
+                    cargarCarrito();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Eliminado!',
+                        text: `El producto "${productoEliminado.nombre}" ha sido eliminado del carrito.`,
+                        confirmButtonText: 'Aceptar',
+                        background: '#f0f0f0',
+                        backdrop: 'rgba(255, 165, 0, 0.1)',
+                        timer: 5000,
+                        timerProgressBar: true,
+                    });
+                }
+            });
         }
 
         window.onload = cargarCarrito;
@@ -148,9 +179,14 @@
             const user = JSON.parse(localStorage.getItem('user'));
 
             if (carrito.length === 0) {
-                alert('El carrito está vacío. Por favor, agrega productos antes de comprar.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Carrito vacío',
+                    text: 'El carrito está vacío. Por favor, agrega productos antes de comprar.'
+                });
                 return;
             }
+
 
             const items = [];
 
@@ -169,7 +205,11 @@
 
                     if (!response.ok) {
                         const errorText = await response.text();
-                        alert(`Error al comprar el producto "${producto.nombre}": ${errorText}`);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al comprar el producto',
+                            text: `No se pudo comprar el producto "${producto.nombre}": ${errorText}`
+                        });
                         continue;
                     }
 
@@ -180,7 +220,11 @@
 
                 } catch (error) {
                     console.error('Error al hacer la compra:', error);
-                    alert('Hubo un error al realizar la compra. Intenta nuevamente.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la compra',
+                        text: 'Hubo un error al realizar la compra. Intenta nuevamente.'
+                    });
                 }
             }
 
@@ -270,6 +314,20 @@
         });
 
 
+    </script>
+
+    <script>
+        function verificarToken() {
+            const token = localStorage.getItem('token');
+            const loginLink = document.getElementById('loginLink');
+
+            if (token) {
+                loginLink.innerHTML = 'Perfil';
+                loginLink.href = 'perfil.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', verificarToken);
     </script>
 </body>
 

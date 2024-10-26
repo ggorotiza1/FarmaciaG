@@ -58,7 +58,7 @@ app.post('/login', async (req, res) => {
     const user = result.rows[0];
 
     if (user) {
-      if (password === user.user_contrasenia) {  // Comparación directa de la contraseña en texto plano
+      if (password === user.user_contrasenia) {  
         const token = jwt.sign({ userId: user.user_id }, JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
       } else {
@@ -73,7 +73,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Verificar JWT (protege las rutas)
+// Verificar JWT 
 const verifyToken = (req, res, next) => {
   const token = req.headers['authorization'];
   if (!token) return res.status(403).send('Token no proporcionado');
@@ -85,7 +85,7 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-// Ruta protegida (solo accesible con token válido)
+// Ruta protegida
 app.get('/protected', verifyToken, (req, res) => {
   res.send('Acceso concedido a contenido protegido');
 });
@@ -93,8 +93,6 @@ app.get('/protected', verifyToken, (req, res) => {
 app.post('/comprar', async (req, res) => {
   const { pro_id, cantidad } = req.body;
 
-  // Validar que se proporcionen los datos necesarios
-  //console.log(`Datos recibidos: pro_id = ${pro_id}, cantidad = ${cantidad}`);
   if (!pro_id || !cantidad) {
     return res.status(400).send('ID de producto y cantidad son requeridos.');
   }
@@ -103,44 +101,36 @@ app.post('/comprar', async (req, res) => {
     const stockResult = await pool.query('SELECT pro_stock FROM public.productos WHERE pro_id = $1', [pro_id]);
 
     if (stockResult.rows.length === 0) {
-      //console.log('Producto no encontrado');
       return res.status(404).send('Producto no encontrado.');
     }
 
     const stockActual = stockResult.rows[0].pro_stock;
-    //console.log(`Stock actual: ${stockActual}`);
 
     if (cantidad > stockActual) {
-      //console.log('No hay suficiente stock disponible');
       return res.status(400).send('No hay suficiente stock disponible.');
     }
 
     await pool.query('UPDATE public.productos SET pro_stock = pro_stock - $1 WHERE pro_id = $2', [cantidad, pro_id]);
-    //console.log('Compra realizada con éxito');
     res.status(200).send('Compra realizada con éxito.');
   } catch (err) {
-    //console.error('Error al realizar la compra', err);
     res.status(500).send('Error al realizar la compra');
   }
 });
 
-// Endpoint para actualizar el stock
+// Actualizar el stock
 app.post('/actualizar-stock', async (req, res) => {
   const { pro_id, cantidad } = req.body;
 
-  // Validación básica
   if (!pro_id || !cantidad) {
     return res.status(400).json({ mensaje: 'Faltan datos: pro_id y cantidad son requeridos.' });
   }
 
   try {
-    // Actualizar el stock en la base de datos
     const query = 'UPDATE public.productos SET pro_stock = pro_stock + $1 WHERE pro_id = $2 RETURNING *';
     const values = [cantidad, pro_id];
 
     const result = await pool.query(query, values);
 
-    // Verifica si se actualizó algún registro
     if (result.rowCount === 0) {
       return res.status(404).json({ mensaje: 'Producto no encontrado.' });
     }
