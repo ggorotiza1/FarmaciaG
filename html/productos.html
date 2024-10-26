@@ -151,7 +151,7 @@
                     <p class="text-black-600 mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
                     <p class="text-black-600 mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
                     <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
-                        onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio})">Comprar</button>
+                        onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}')">Comprar</button>
                 </div>
                 `;
                     productosGrid.innerHTML += productoHTML;
@@ -162,27 +162,28 @@
         }
 
         // Función para agregar un producto al carrito
-        function agregarAlCarrito(productId, productName, productPrice) {
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    const producto = {
-        id: productId,
-        nombre: productName,
-        precio: productPrice,
-        cantidad: 1
-    };
-    carrito.push(producto);
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+        function agregarAlCarrito(productId, productName, productPrice, productRuta) {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const producto = {
+                id: productId,
+                nombre: productName,
+                precio: productPrice,
+                cantidad: 1,
+                ruta: productRuta
+            };
+            carrito.push(producto);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
 
-    // Usar SweetAlert2 para mostrar el mensaje
-    Swal.fire({
-        title: '¡Producto agregado!',
-        text: `${productName} ha sido agregado al carrito.`,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-        timer: 2000,
-        timerProgressBar: true
-    });
-}
+            // Usar SweetAlert2 para mostrar el mensaje
+            Swal.fire({
+                title: '¡Producto agregado!',
+                text: `${productName} ha sido agregado al carrito.`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                timer: 2000,
+                timerProgressBar: true
+            });
+        }
 
 
         // Llamar a la función para cargar los productos cuando se cargue la página
@@ -222,7 +223,7 @@
                 contadorElemento.classList.add('hidden'); // Ocultar si está vacío
             }
         }
- 
+
         // Llamar a la función al cargar la página
         window.onload = function () {
             cargarProductos(); // Asegúrate de cargar los productos

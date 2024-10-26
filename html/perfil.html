@@ -35,6 +35,11 @@
         .profile-info {
             margin-left: 20px;
         }
+
+        .table-header {
+            background-color: #f97316; /* Color de fondo para el encabezado */
+            color: white; /* Color de texto blanco */
+        }
     </style>
 </head>
 
@@ -93,7 +98,7 @@
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <table class="min-w-full bg-white">
                 <thead>
-                    <tr>
+                    <tr class="table-header">
                         <th
                             class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
                             ID</th>
@@ -176,6 +181,15 @@
             </form>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-10">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-bold mb-6 text-gradient">Farmacia G</h3>
+            <p class="text-gray-400 mb-6">Innovación en salud para tu bienestar diario.</p>
+            <p class="text-sm text-gray-500">&copy; 2024 Farmacia G. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 
     <script>
         // Simular la obtención de datos del perfil del usuario

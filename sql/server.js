@@ -22,13 +22,18 @@ app.use((req, res, next) => {
 // Ruta para obtener los productos
 app.get('/productos', async (req, res) => {
   try {
-    const result = await pool.query('SELECT pro_id, pro_nombre, pro_descripcion, pro_ruta, pro_estado, pro_precio, pro_stock FROM public.productos');
+    const result = await pool.query(`
+      SELECT pro_id, pro_nombre, pro_descripcion, pro_ruta, pro_estado, pro_precio, pro_stock 
+      FROM public.productos 
+      ORDER BY pro_id ASC
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error('Error al obtener los productos', err);
     res.status(500).send('Error al obtener los productos');
   }
 });
+
 
 // Ruta para obtener los productos
 // app.get('/productos-disponibles', async (req, res) => {

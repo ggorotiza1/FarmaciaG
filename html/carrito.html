@@ -9,8 +9,6 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
-    <link href="/css/tailwind.css" rel="stylesheet">
-
 
     <style>
         .text-gradient {
@@ -44,7 +42,11 @@
                 <a href="index.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Inicio</a>
                 <a href="productos.html"
                     class="text-gray-700 hover:text-orange-500 transition duration-300">Productos</a>
-                <a href="carrito.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Carrito</a>
+                <a href="servicios.html"
+                    class="text-gray-700 hover:text-orange-500 transition duration-300">Servicios</a>
+                <a href="nosotros.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Nosotros</a>
+                <a href="contacto.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Contacto</a>
+                <!-- <a href="carrito.html" class="text-gray-700 hover:text-orange-500 transition duration-300">Carrito</a> -->
             </nav>
         </div>
     </header>
@@ -63,6 +65,15 @@
         </div>
     </section>
 
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-10">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-bold mb-6 text-gradient">Farmacia G</h3>
+            <p class="text-gray-400 mb-6">Innovación en salud para tu bienestar diario.</p>
+            <p class="text-sm text-gray-500">&copy; 2024 Farmacia G. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
     <script>
         // Función para cargar los artículos del carrito
         function cargarCarrito() {
@@ -74,21 +85,35 @@
 
             carrito.forEach((producto, index) => {
                 const itemHTML = `
-                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold">${producto.nombre}</h3>
-                            <p class="text-gray-600">Precio: $${producto.precio.toFixed(2)}</p>
-                            <label for="cantidad-${index}" class="mr-2">Cantidad:</label>
-                            <input type="number" id="cantidad-${index}" value="${producto.cantidad}" min="1" class="w-16 border rounded p-1" onchange="actualizarSubtotal(${index}, ${producto.precio})">
+                    <div class="flex justify-between items-center bg-white p-6 rounded-lg shadow-lg mb-5 transition hover:shadow-xl">
+                        <div class="flex items-center">
+                            <div class="bg-orange-100 p-3 rounded-lg mr-4">
+                                <img src="${producto.ruta}" alt="${producto.nombre}" class="w-16 h-16 object-cover rounded-lg">
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800">${producto.nombre}</h3>
+                                <p class="text-gray-500 mt-1">Precio: <span class="font-semibold text-gray-700">$${producto.precio.toFixed(2)}</span></p>
+                                <label for="cantidad-${index}" class="block text-gray-500 mt-2">Cantidad:</label>
+                                <input type="number" id="cantidad-${index}" value="${producto.cantidad}" min="1" 
+                                    class="mt-1 w-20 border border-gray-300 rounded-lg p-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-400" 
+                                    onchange="actualizarSubtotal(${index}, ${producto.precio})">
+                            </div>
                         </div>
-                        <div>
-                            <span class="text-lg font-bold" id="subtotal-${index}">$${(producto.precio * producto.cantidad).toFixed(2)}</span>
-                            <button onclick="eliminarProducto(${index})" class="text-red-500 hover:text-red-700 ml-4">Eliminar</button>
+                        <div class="flex flex-col items-end">
+                            <span class="text-lg font-bold text-gray-800" id="subtotal-${index}">$${(producto.precio * producto.cantidad).toFixed(2)}</span>
+                            <button onclick="eliminarProducto(${index})" 
+                                    class="mt-3 px-4 py-2 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition duration-300 ease-in-out">
+                                <svg class="inline-block w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                Eliminar
+                            </button>
                         </div>
                     </div>
                 `;
                 carritoItemsContainer.innerHTML += itemHTML;
                 total += producto.precio * producto.cantidad;
+
             });
 
             // Actualizar el total
@@ -122,114 +147,148 @@
         // Llamar a la función para cargar el carrito cuando se carga la página
         window.onload = cargarCarrito;
 
-
         document.getElementById('comprar-btn').addEventListener('click', async () => {
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            let total = 0;
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    let total = 0;
+    let subtotal = 0;
 
-            // Verificar si el carrito está vacío
-            if (carrito.length === 0) {
-                alert('El carrito está vacío. Por favor, agrega productos antes de comprar.');
-                return; // Salir si el carrito está vacío
+    // Verificar si el carrito está vacío
+    if (carrito.length === 0) {
+        alert('El carrito está vacío. Por favor, agrega productos antes de comprar.');
+        return; // Salir si el carrito está vacío
+    }
+
+    const items = []; // Array para almacenar los productos comprados
+
+    for (const producto of carrito) {
+        try {
+            const response = await fetch('http://localhost:3000/comprar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    pro_id: producto.id,
+                    cantidad: producto.cantidad,
+                }),
+            });
+
+            // Verificar si la respuesta es válida
+            if (!response.ok) {
+                const errorText = await response.text();
+                alert(`Error al comprar el producto "${producto.nombre}": ${errorText}`);
+                continue; // Salta al siguiente producto si hay error
             }
 
-            const items = []; // Array para almacenar los productos comprados
+            // Calcular el precio total y agregar al array de items
+            const precioTotal = producto.precio * producto.cantidad;
+            subtotal += precioTotal; // Acumular subtotal
+            total += precioTotal;
+            items.push([producto.nombre, producto.precio.toFixed(2), producto.cantidad, precioTotal.toFixed(2)]); // Añadir producto a la tabla
 
-            for (const producto of carrito) {
-                try {
-                    const response = await fetch('http://localhost:3000/comprar', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            pro_id: producto.id,
-                            cantidad: producto.cantidad,
-                        }),
-                    });
+        } catch (error) {
+            console.error('Error al hacer la compra:', error);
+            alert('Hubo un error al realizar la compra. Intenta nuevamente.');
+        }
+    }
 
-                    // Verificar si la respuesta es válida
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        alert(`Error al comprar el producto "${producto.nombre}": ${errorText}`);
-                        continue; // Salta al siguiente producto si hay error
-                    }
+    // Calcular IVA
+    const iva = subtotal * 0.15; // 15% de IVA
+    total += iva; // Sumar IVA al total
 
-                    // Calcular el precio total y agregar al array de items
-                    const precioTotal = producto.precio * producto.cantidad;
-                    total += precioTotal;
-                    items.push([producto.nombre, producto.precio.toFixed(2), producto.cantidad, precioTotal.toFixed(2)]); // Añadir producto a la tabla
+    // Mostrar el recibo final si hay productos comprados
+    if (total > 0) {
+        // Generar el PDF
+        const { jsPDF } = window.jspdf; // Si usaste el CDN
+        const doc = new jsPDF();
 
-                } catch (error) {
-                    console.error('Error al hacer la compra:', error);
-                    alert('Hubo un error al realizar la compra. Intenta nuevamente.');
-                }
-            }
+        // Establecer un fondo
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
 
-            // Mostrar el recibo final si hay productos comprados
-            if (total > 0) {
-                // Generar el PDF
-                const { jsPDF } = window.jspdf; // Si usaste el CDN
-                const doc = new jsPDF();
+        // Encabezado
+        doc.setFontSize(22);
+        doc.setTextColor('#f97316'); // Color del título
+        const title = 'Farmacia G';
+        const titleWidth = doc.getTextWidth(title);
+        const pageWidth = doc.internal.pageSize.getWidth();
+        doc.text(title, (pageWidth - titleWidth) / 2, 30);
 
-                // Título centrado
-                doc.setFontSize(16);
-                const title = 'Recibo de Compra';
-                const titleWidth = doc.getTextWidth(title);
-                const pageWidth = doc.internal.pageSize.getWidth();
-                doc.text(title, (pageWidth - titleWidth) / 2, 10);
+        // Subtítulo
+        doc.setFontSize(18);
+        doc.setTextColor('#333'); // Color oscuro para el subtítulo
+        doc.text('Recibo de Compra', (pageWidth - doc.getTextWidth('Recibo de Compra')) / 2, 40);
 
-                doc.setFontSize(12);
+        // Fecha de compra
+        doc.setFontSize(12);
+        doc.setTextColor('#666'); // Color gris para la fecha
+        const fechaCompra = new Date().toLocaleString();
+        doc.text(`Fecha: ${fechaCompra}`, 10, 60);
 
-                // Usar AutoTable para generar la tabla
-                doc.autoTable({
-                    head: [['Producto', 'Precio Unitario ($)', 'Cantidad', 'Total ($)']],
-                    body: items,
-                    startY: 30, // Iniciar la tabla a partir de la posición vertical 30
-                    styles: {
-                        cellPadding: 5,
-                        tableLineColor: [255, 140, 0], // Color de línea naranja
-                        tableLineWidth: 0.75,
-                        fillColor: [255, 165, 0], // Color de fondo naranja
-                        textColor: [0, 0, 0],
-                    },
-                    headStyles: {
-                        fillColor: [255, 140, 0], // Color de fondo de la cabecera (naranja oscuro)
-                        textColor: [255, 255, 255], // Color del texto de la cabecera (blanco)
-                    },
-                    alternateRowStyles: {
-                        fillColor: [255, 200, 0], // Color alternativo para las filas (naranja claro)
-                    }
-                });
-
-                // Agregar total a la tabla
-                doc.autoTable({
-                    startY: doc.autoTable.previous.finalY + 10, // Comenzar después de la tabla anterior
-                    head: [['Total de la compra', '$' + total.toFixed(2)]],
-                    body: [[]],
-                    styles: {
-                        fillColor: [255, 140, 0], // Color de fondo naranja
-                        textColor: [255, 255, 255], // Color del texto (blanco)
-                        fontSize: 12,
-                        cellPadding: 5,
-                    },
-                    margin: { top: 10 },
-                });
-
-                // Agregar mensaje de agradecimiento
-                const thankYouMessage = "Gracias por su compra!";
-                doc.text(thankYouMessage, (pageWidth - doc.getTextWidth(thankYouMessage)) / 2, doc.autoTable.previous.finalY + 20);
-
-                // Guardar el PDF
-                doc.save('recibo_compra.pdf');
-            } else {
-                alert('No se pudieron procesar las compras. Por favor, intenta nuevamente.');
-            }
-
-            // Vaciar el carrito y recargar la página
-            localStorage.removeItem('carrito'); // Vaciar el carrito
-            window.location.reload(); // Recargar la página
+        // Usar AutoTable para generar la tabla
+        doc.autoTable({
+            head: [['Producto', 'Precio Unitario ($)', 'Cantidad', 'Total ($)']],
+            body: items,
+            startY: 70, // Iniciar la tabla a partir de la posición vertical 70
+            styles: {
+                cellPadding: 5,
+                tableLineColor: [249, 115, 22], // Color de línea naranja
+                tableLineWidth: 1,
+                fillColor: [255, 255, 255], // Color de fondo blanco
+                textColor: [0, 0, 0],
+                fontSize: 12,
+            },
+            headStyles: {
+                fillColor: [249, 115, 22], // Color de fondo de la cabecera
+                textColor: [255, 255, 255], // Color del texto de la cabecera
+                fontSize: 14,
+            },
+            alternateRowStyles: {
+                fillColor: [240, 240, 240], // Color alternativo para las filas
+            },
+            margin: { top: 10 },
         });
+
+        // Agregar resumen de costos
+        const costSummaryStartY = doc.autoTable.previous.finalY + 10; // Comenzar después de la tabla anterior
+
+        // Subtotal
+        doc.setFontSize(12);
+        doc.setTextColor('#333'); // Color oscuro para subtotal
+        doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 10, costSummaryStartY);
+        // IVA
+        doc.text(`IVA (15%): $${iva.toFixed(2)}`, 10, costSummaryStartY + 10);
+        // Total
+        doc.setFontSize(14); // Mayor tamaño para el total
+        doc.setTextColor('#f97316'); // Color para total
+        doc.text(`Total: $${total.toFixed(2)}`, 10, costSummaryStartY + 20);
+
+        // Agregar mensaje de agradecimiento
+        const thankYouMessage = "¡Su salud es nuestra prioridad! Agradecemos su compra.";
+        doc.setFontSize(12);
+        doc.setTextColor('#333'); // Color oscuro para el mensaje
+        doc.text(thankYouMessage, (pageWidth - doc.getTextWidth(thankYouMessage)) / 2, costSummaryStartY + 40);
+
+        // Número de hoja
+        const pageNumber = "Página 1";
+        doc.setFontSize(10);
+        doc.setTextColor('#999'); // Color gris para el número de página
+        doc.text(pageNumber, 10, doc.internal.pageSize.height - 10);
+
+        // Agregar línea divisoria
+        doc.setDrawColor(249, 115, 22);
+        doc.line(10, costSummaryStartY + 25, pageWidth - 10, costSummaryStartY + 25); // Línea divisoria
+
+        // Guardar el PDF
+        doc.save('recibo_compra.pdf');
+    } else {
+        alert('No se pudieron procesar las compras. Por favor, intenta nuevamente.');
+    }
+
+    // Vaciar el carrito y recargar la página
+    localStorage.removeItem('carrito'); // Vaciar el carrito
+    window.location.reload(); // Recargar la página
+});
 
     </script>
 </body>
