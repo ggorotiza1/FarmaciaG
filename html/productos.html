@@ -154,7 +154,7 @@
                 <p class="text-white mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
                 <p class="text-white mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
                 <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
-                    onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}')">Agregar al Carrito</button>
+                    onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}', ${producto.pro_stock})">Agregar al Carrito</button>
             </div>
         </div>
     `;
@@ -166,14 +166,15 @@
             }
         }
 
-        function agregarAlCarrito(productId, productName, productPrice, productRuta) {
+        function agregarAlCarrito(productId, productName, productPrice, productRuta, productoStock) {
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             const producto = {
                 id: productId,
                 nombre: productName,
                 precio: productPrice,
                 cantidad: 1,
-                ruta: productRuta
+                ruta: productRuta,
+                stock: productoStock
             };
             carrito.push(producto);
             localStorage.setItem('carrito', JSON.stringify(carrito));
