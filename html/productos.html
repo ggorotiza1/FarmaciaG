@@ -138,19 +138,22 @@
                 productosGrid.innerHTML = '';
 
                 productos.forEach(producto => {
-                    const productoHTML = `
-                <div class="bg-white p-6 rounded-lg shadow-lg neon-border hover:shadow-2xl transition-all duration-300">
-                    <img src="${producto.pro_ruta}" alt="${producto.pro_nombre}" class="w-full h-48 object-cover rounded mb-4">
-                    <h3 class="text-2xl font-bold mb-2">${producto.pro_nombre}</h3>
-                    <p class="text-black-600 mb-4">${producto.pro_descripcion}</p>
-                    <p class="text-black-600 mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
-                    <p class="text-black-600 mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
-                    <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
-                        onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}')">Comprar</button>
-                </div>
-                `;
-                    productosGrid.innerHTML += productoHTML;
-                });
+    const productoHTML = `
+        <div class="bg-white p-6 rounded-lg shadow-lg neon-border hover:shadow-2xl transition-all duration-300">
+            <img src="${producto.pro_ruta}" alt="${producto.pro_nombre}" class="w-full h-48 object-cover rounded mb-4">
+            <div class="bg-opacity-50 bg-gray-800 p-4 rounded">
+                <h3 class="text-2xl font-bold text-white mb-2">${producto.pro_nombre}</h3>
+                <p class="text-white mb-4">${producto.pro_descripcion}</p>
+                <p class="text-white mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
+                <p class="text-white mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
+                <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
+                    onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}')">Comprar</button>
+            </div>
+        </div>
+    `;
+    productosGrid.innerHTML += productoHTML;
+});
+
             } catch (error) {
                 console.error('Error al cargar los productos:', error);
             }
@@ -174,9 +177,17 @@
                 text: `${productName} ha sido agregado al carrito.`,
                 icon: 'success',
                 confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#f97316',
                 timer: 2000,
-                timerProgressBar: true
+                timerProgressBar: true,
+                didOpen: () => {
+                    const progressBar = Swal.getHtmlContainer().querySelector('.swal2-timer-progress-bar');
+                    if (progressBar) {
+                        progressBar.style.backgroundColor = '#f97316';
+                    }
+                }
             });
+
         }
 
 
@@ -189,9 +200,11 @@
             const loginLink = document.getElementById('loginLink');
             const userPhoto = document.getElementById('userPhoto');
             const profileLink = document.getElementById('profileLink');
+            const userProfile = document.getElementById('userProfile');
 
             if (token) {
                 loginLink.style.display = 'none';
+                userProfile.style.display = 'flex';
                 profileLink.innerHTML = 'Perfil';
 
                 const user = JSON.parse(localStorage.getItem('user'));
@@ -199,6 +212,9 @@
                     userPhoto.src = user['user_foto-url'];
                     userPhoto.classList.remove('hidden');
                 }
+            } else {
+                loginLink.style.display = 'block';
+                userProfile.style.display = 'none';
             }
         }
 

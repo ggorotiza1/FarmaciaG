@@ -9,56 +9,152 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
     <link href="/css/tailwind.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
         .text-gradient {
-            background: linear-gradient(90deg, #f97316, #f43f5e);
+            background: linear-gradient(90deg, #f97316, #f43f5e, #f97316);
             -webkit-background-clip: text;
             color: transparent;
+            font-weight: 700;
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .text-gradient:hover {
+            color: #f97316;
         }
 
         .button-glow {
-            box-shadow: 0 0 10px 2px rgba(249, 115, 22, 0.8);
+            box-shadow: 0 0 10px 3px rgba(249, 115, 22, 0.7), 0 0 20px rgba(244, 63, 94, 0.6);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            background: #f97316;
+            color: white;
+            border-radius: 5px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .button-glow:hover {
+            box-shadow: 0 0 20px 4px rgba(249, 115, 22, 0.9), 0 0 25px rgba(244, 63, 94, 0.8);
+            transform: scale(1.05);
         }
 
         .card {
             background: white;
             border-radius: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+            transition: box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
         }
 
         .profile-photo {
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 3px solid #f97316;
+            transition: border-color 0.3s ease;
+        }
+
+        .profile-photo:hover {
+            border-color: #f43f5e;
         }
 
         .profile-info {
-            margin-left: 20px;
+            margin-left: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .profile-info h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .profile-info p {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 0.2rem;
+        }
+
+        .table-container {
+            background-color: #f7fafc;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
         .table-header {
             background-color: #f97316;
             color: white;
+            font-weight: bold;
+        }
+
+        .table-cell {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .table-cell img {
+            border-radius: 0.5rem;
+            max-width: 3rem;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .edit-button {
+            background-color: #fbbf24;
+        }
+
+        .edit-button:hover {
+            background-color: #f59e0b;
+        }
+
+        .add-button {
+            background-color: #38a169;
+        }
+
+        .add-button:hover {
+            background-color: #2f855a;
         }
     </style>
 </head>
 
 <body class="bg-gray-100 text-gray-800">
-
     <!-- Header -->
     <header class="bg-white shadow-md py-4">
-        <div class="container mx-auto text-center">
+        <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-4xl font-bold text-gradient">Perfil - Farmacia G</h1>
+            <div class="flex space-x-4">
+                <button id="home-btn" class="button-glow">
+                    Inicio
+                </button>
+                <button id="logout-btn" class="button-glow">
+                    Cerrar Sesión
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- Perfil Section -->
     <section class="container mx-auto py-8">
         <h2 class="text-3xl font-bold mb-6 text-center">Información del Usuario</h2>
-
-        <!-- Tarjeta de perfil -->
         <div class="card flex items-center mx-auto max-w-3xl">
             <img id="user_foto" class="profile-photo" src="https://via.placeholder.com/100" alt="Foto de perfil">
             <div class="profile-info">
@@ -68,18 +164,6 @@
                         id="user_correo">correo@example.com</span></p>
                 <p class="text-gray-600"><strong>Rol del Usuario:</strong> <span id="user_rol">Rol</span></p>
             </div>
-        </div>
-
-        <!-- Botón de cerrar sesión -->
-        <div class="text-center mt-6">
-            <button id="home-btn"
-                class="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition duration-200">
-                Inicio
-            </button>
-            <button id="logout-btn"
-                class="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition duration-200">
-                Cerrar Sesión
-            </button>
         </div>
     </section>
 
@@ -97,34 +181,18 @@
         </div>
 
         <!-- Tabla de productos -->
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="table-container">
             <table class="min-w-full bg-white">
-                <thead>
-                    <tr class="table-header">
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            ID</th>
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            Nombre</th>
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            Descripción</th>
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            Ruta de la Foto</th>
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            Precio</th>
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            Stock</th>
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            Estado</th>
-                        <th
-                            class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold text-gray-600 uppercase">
-                            Acciones</th>
+                <thead class="table-header">
+                    <tr>
+                        <th class="table-cell">ID</th>
+                        <th class="table-cell">Nombre</th>
+                        <th class="table-cell">Descripción</th>
+                        <th class="table-cell">Foto</th>
+                        <th class="table-cell">Precio</th>
+                        <th class="table-cell">Stock</th>
+                        <th class="table-cell">Estado</th>
+                        <th class="table-cell">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="productos-list"></tbody>
@@ -259,7 +327,7 @@
                         <td class="px-6 py-4 border-b">${producto.pro_stock}</td>
                         <td class="px-6 py-4 border-b">${producto.pro_estado}</td>
                         <td class="px-6 py-4 border-b">
-                            <button onclick="addStock(${producto.pro_id})" class="bg-orange-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded ml-2">
+                            <button onclick="addStock(${producto.pro_id})" class="bg-orange-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
                                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAY5JREFUSEvNlD9IlWEUh5+HbGmwQUipIYKgobEh3RpqbAkEh0CI0kWoiGjMMcSIaAqKIIekpcVNwS2qoalJxwQVaQkK7uLJV+6V6+d9/V65Kp31HM5zfuefHLF5xPk5PkBERFPNH+Ctev8w1O0oaAO08t5QF7qF7GlRRDwBngFz6s1OgFYxam2LOwH6gDXgBHBe/VmFdAVIySJiBrgNTKlJ0S47DMAQ8Bn4BZxTGxGxCdmt21ST4j2W7WFE/AAuA6Pq+xJARLwCJoCX6oNE2w8wBrwGvqlX20vr1KKIOAlsAKeBS+pSHeAUsAr0AlfU7y1IBjCylfgD8FUdbMXuu2Ztkt+pd2oA88B14J76phRwEVgGGsAZ9XfmLs4CK8BfoF9N32Dbag8lIhaBa8BjdToDmNza7qfNF3O3PaYEMAx8LHwZQ+qXgwJ6gLQRF2ogn9Rb1ZhaBYWVZ8OKABHxEHgEPFdfVG4i6ysacvM3pefXD6yrAxVA1ncQQLrodEiz6ngFkPUVA7qZQ9EM/mvAPx4RqBn3Wov4AAAAAElFTkSuQmCC"/>
                                 </button>
                         </td>
@@ -302,13 +370,36 @@
 
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
+            Swal.fire({
+                title: '¿Estás seguro de que quieres cerrar sesión?',
+                text: "Se eliminarán tus datos de sesión.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f97316',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cerrar sesión',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    Swal.fire({
+                        title: 'Sesión cerrada',
+                        text: 'Has cerrado sesión con éxito.',
+                        icon: 'success',
+                        confirmButtonColor: '#f97316' 
+                    }).then(() => {
+                        window.location.href = 'login.html';
+                    });
+                }
+            });
         });
     </script>
+
 
     <script>
         document.getElementById('home-btn').addEventListener('click', () => {
@@ -329,6 +420,10 @@
                 showCancelButton: true,
                 confirmButtonText: 'Agregar',
                 cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#f97316', // Color del botón de agregar en naranja
+                cancelButtonColor: '#d33',      // Color del botón de cancelar (rojo)
+                background: '#f0f0f0',          // Fondo de alerta en gris claro
+                backdrop: 'rgba(255, 165, 0, 0.2)', // Fondo translúcido en naranja claro
                 preConfirm: (value) => {
                     if (!value || value <= 0) {
                         Swal.showValidationMessage('Por favor, ingrese una cantidad válida mayor a 0.');
@@ -359,7 +454,11 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Stock actualizado',
-                                text: `${data.mensaje}`
+                                text: `${data.mensaje}`,
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonColor: '#f97316', 
+                                background: '#f0f0f0',        
+                                backdrop: 'rgba(255, 165, 0, 0.2)' 
                             });
                             fetchProductos();
                         })
@@ -368,11 +467,16 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error al agregar stock',
-                                text: 'Hubo un problema al agregar el stock. Intenta nuevamente.'
+                                text: 'Hubo un problema al agregar el stock. Intenta nuevamente.',
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonColor: '#f97316', 
+                                background: '#f0f0f0',        
+                                backdrop: 'rgba(255, 165, 0, 0.2)' 
                             });
                         });
                 }
-            })
+            });
+
         }
     </script>
 </body>

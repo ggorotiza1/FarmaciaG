@@ -58,7 +58,7 @@ app.post('/login', async (req, res) => {
     const user = result.rows[0];
 
     if (user) {
-      if (password === user.user_contrasenia) {  
+      if (password === user.user_contrasenia) {
         const token = jwt.sign({ userId: user.user_id }, JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
       } else {

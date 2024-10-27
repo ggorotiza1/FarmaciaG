@@ -178,9 +178,11 @@
             const loginLink = document.getElementById('loginLink');
             const userPhoto = document.getElementById('userPhoto');
             const profileLink = document.getElementById('profileLink');
+            const userProfile = document.getElementById('userProfile');
 
             if (token) {
                 loginLink.style.display = 'none';
+                userProfile.style.display = 'flex';
                 profileLink.innerHTML = 'Perfil';
 
                 const user = JSON.parse(localStorage.getItem('user'));
@@ -188,10 +190,14 @@
                     userPhoto.src = user['user_foto-url'];
                     userPhoto.classList.remove('hidden');
                 }
+            } else {
+                loginLink.style.display = 'block';
+                userProfile.style.display = 'none';
             }
         }
 
         document.addEventListener('DOMContentLoaded', verificarToken);
+
 
     </script>
 

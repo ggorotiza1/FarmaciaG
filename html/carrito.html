@@ -28,6 +28,19 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 2rem;
         }
+
+        .custom-icon-color .swal2-success-circular-line-left,
+        .custom-icon-color .swal2-success-circular-line-right,
+        .custom-icon-color .swal2-success-fix,
+        .custom-icon-color .swal2-success-ring {
+            background-color: #f97316 !important;
+            border-color: #f97316 !important;
+        }
+
+        .custom-icon-color .swal2-success-line-tip,
+        .custom-icon-color .swal2-success-line-long {
+            background-color: #f97316 !important;
+        }
     </style>
 
 </head>
@@ -145,6 +158,9 @@
                 showCancelButton: true,
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#f97316',
+                cancelButtonColor: '#a3a3a3',
+                background: '#f0f0f0',
                 toast: true,
                 position: 'top-end',
                 timer: 3000,
@@ -160,13 +176,18 @@
                         title: '¡Eliminado!',
                         text: `El producto "${productoEliminado.nombre}" ha sido eliminado del carrito.`,
                         confirmButtonText: 'Aceptar',
+                        confirmButtonColor: '#f97316',
                         background: '#f0f0f0',
-                        backdrop: 'rgba(255, 165, 0, 0.1)',
+                        backdrop: 'rgba(255, 165, 0, 0.2)',
                         timer: 5000,
                         timerProgressBar: true,
+                        customClass: {
+                            icon: 'custom-icon-color'
+                        }
                     });
                 }
             });
+
         }
 
         window.onload = cargarCarrito;
@@ -182,11 +203,14 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Carrito vacío',
-                    text: 'El carrito está vacío. Por favor, agrega productos antes de comprar.'
+                    text: 'El carrito está vacío. Por favor, agrega productos antes de comprar.',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonColor: '#f97316',
+                    background: '#f0f0f0',
+                    backdrop: 'rgba(255, 165, 0, 0.2)',
                 });
                 return;
             }
-
 
             const items = [];
 
@@ -216,7 +240,7 @@
                     const precioTotal = producto.precio * producto.cantidad;
                     subtotal += precioTotal;
                     total += precioTotal;
-                    items.push([producto.nombre, producto.precio.toFixed(2), producto.cantidad, precioTotal.toFixed(2)]); // Añadir producto a la tabla
+                    items.push([producto.nombre, producto.precio.toFixed(2), producto.cantidad, precioTotal.toFixed(2)]);
 
                 } catch (error) {
                     console.error('Error al hacer la compra:', error);
@@ -312,18 +336,29 @@
             localStorage.removeItem('carrito');
             window.location.reload();
         });
-
-
     </script>
 
     <script>
         function verificarToken() {
             const token = localStorage.getItem('token');
             const loginLink = document.getElementById('loginLink');
+            const userPhoto = document.getElementById('userPhoto');
+            const profileLink = document.getElementById('profileLink');
+            const userProfile = document.getElementById('userProfile');
 
             if (token) {
-                loginLink.innerHTML = 'Perfil';
-                loginLink.href = 'perfil.html';
+                loginLink.style.display = 'none';
+                userProfile.style.display = 'flex';
+                profileLink.innerHTML = 'Perfil';
+
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user && user['user_foto-url']) {
+                    userPhoto.src = user['user_foto-url'];
+                    userPhoto.classList.remove('hidden');
+                }
+            } else {
+                loginLink.style.display = 'block';
+                userProfile.style.display = 'none';
             }
         }
 
