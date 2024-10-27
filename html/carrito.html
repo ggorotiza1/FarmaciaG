@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito - Farmacia GG</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3572/3572177.png" type="image/x-icon">
+    <link rel="icon" href="/img/varios/logo.png" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -94,7 +94,12 @@
     <!-- Carrito Section -->
     <section class="py-12 main-content">
         <div class="container mx-auto">
-            <h2 class="text-4xl font-bold mb-6 text-gradient">Tu Carrito de Compras</h2>
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-4xl font-bold text-gradient">Tu Carrito de Compras</h2>
+                <button id="vaciar-carrito-btn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 hidden">
+                    Vaciar Carrito
+                </button>
+            </div>
             <div id="carrito-items" class="mb-6"></div>
             <div class="flex justify-between text-lg font-semibold">
                 <span>Total:</span>
@@ -378,6 +383,54 @@
             }
         }
         document.addEventListener('DOMContentLoaded', verificarToken);
+    </script>
+    <script>
+        function verificarCarrito() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+            const botonVaciarCarrito = document.getElementById('vaciar-carrito-btn');
+            if (carrito.length > 0) {
+                botonVaciarCarrito.classList.remove('hidden'); // Muestra el botón si hay productos
+            } else {
+                botonVaciarCarrito.classList.add('hidden'); // Oculta el botón si el carrito está vacío
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        verificarCarrito();
+
+        document.getElementById('vaciar-carrito-btn').addEventListener('click', () => {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción vaciará todo el carrito y no se podrá deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, vaciar carrito',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#f97316',
+                cancelButtonColor: '#a3a3a3',
+                background: '#f0f0f0'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('carrito'); // Elimina el carrito de localStorage
+                    cargarCarrito(); // Actualiza la interfaz
+                    verificarCarrito(); // Verifica si debe ocultar el botón
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Carrito Vacío',
+                        text: 'Todos los productos han sido eliminados del carrito.',
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonColor: '#f97316',
+                        background: '#f0f0f0',
+                        backdrop: 'rgba(255, 165, 0, 0.2)',
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                }
+            });
+        });
+
+
     </script>
 </body>
 
