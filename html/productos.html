@@ -47,6 +47,7 @@
             justify-content: center;
             align-items: center;
         }
+        
     </style>
 </head>
 
@@ -90,6 +91,12 @@
                     <span id="carrito-count"
                         class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full px-1 hidden"></span>
                 </a>
+                <div id="carrito-preview" class="hidden absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4">
+                    <h3 class="text-lg font-bold mb-2">Carrito de Compras</h3>
+                    <ul id="carrito-items" class="space-y-2"></ul>
+                    <a href="carrito.html" class="block text-center text-orange-500 mt-4 font-bold hover:text-orange-600">Ver Carrito Completo</a>
+                </div>
+                
             </nav>
         </div>
     </header>
@@ -147,7 +154,7 @@
                 <p class="text-white mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
                 <p class="text-white mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
                 <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
-                    onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}')">Comprar</button>
+                    onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}')">Agregar al Carrito</button>
             </div>
         </div>
     `;

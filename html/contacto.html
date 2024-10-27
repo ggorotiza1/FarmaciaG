@@ -188,19 +188,6 @@
         document.addEventListener('DOMContentLoaded', verificarToken);
 
     </script>
-    <script>
-        function verificarToken() {
-            const token = localStorage.getItem('token');
-            const loginLink = document.getElementById('loginLink');
-
-            if (token) {
-                loginLink.innerHTML = 'Perfil';
-                loginLink.href = 'perfil.html';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', verificarToken);
-    </script>
 
     <script>
         function actualizarContadorCarrito() {
