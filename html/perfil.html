@@ -9,6 +9,10 @@
     <link rel="icon" href="/img/varios/logo.png" type="image/x-icon">
     <link href="/css/tailwind.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
+
+
     <style>
         .text-gradient {
             background: linear-gradient(90deg, #f97316, #f43f5e, #f97316);
@@ -200,6 +204,36 @@
         </div>
     </section>
 
+    <!-- Invoice Section -->
+    <section class="container mx-auto py-8">
+        <h2 class="text-3xl font-bold mb-6">Gestión de Facturas</h2>
+
+        <!-- Botón para agregar nueva factura -->
+        <!-- <div class="mb-4 text-right">
+            <button id="add-invoice-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded button-glow">
+                Agregar Factura
+            </button>
+        </div> -->
+
+        <!-- Tabla de facturas -->
+        <div class="table-container">
+            <table class="min-w-full bg-white">
+                <thead class="table-header">
+                    <tr>
+                        <th class="table-cell">ID</th>
+                        <th class="table-cell">Cliente</th>
+                        <th class="table-cell">Fecha</th>
+                        <th class="table-cell">Total</th>
+                        <th class="table-cell">Estado</th>
+                        <th class="table-cell">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="facturas-list"></tbody>
+            </table>
+        </div>
+    </section>
+
+
     <!-- Modal para agregar o editar productos -->
     <div id="product-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden">
         <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto mt-20">
@@ -345,10 +379,10 @@
                             </button>
                             */
 
-        addProductBtn.addEventListener('click', () => {
-            modalTitle.textContent = 'Agregar Producto';
-            productModal.classList.remove('hidden');
-        });
+        // addProductBtn.addEventListener('click', () => {
+        //     modalTitle.textContent = 'Agregar Producto';
+        //     productModal.classList.remove('hidden');
+        // });
 
         cancelBtn.addEventListener('click', () => {
             productModal.classList.add('hidden');
@@ -391,7 +425,7 @@
                         title: 'Sesión cerrada',
                         text: 'Has cerrado sesión con éxito.',
                         icon: 'success',
-                        confirmButtonColor: '#f97316' 
+                        confirmButtonColor: '#f97316'
                     }).then(() => {
                         window.location.href = 'login.html';
                     });
@@ -420,10 +454,10 @@
                 showCancelButton: true,
                 confirmButtonText: 'Agregar',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#f97316', // Color del botón de agregar en naranja
-                cancelButtonColor: '#d33',      // Color del botón de cancelar (rojo)
-                background: '#f0f0f0',          // Fondo de alerta en gris claro
-                backdrop: 'rgba(255, 165, 0, 0.2)', // Fondo translúcido en naranja claro
+                confirmButtonColor: '#f97316', 
+                cancelButtonColor: '#d33',      
+                background: '#f0f0f0',        
+                backdrop: 'rgba(255, 165, 0, 0.2)', 
                 preConfirm: (value) => {
                     if (!value || value <= 0) {
                         Swal.showValidationMessage('Por favor, ingrese una cantidad válida mayor a 0.');
@@ -456,9 +490,9 @@
                                 title: 'Stock actualizado',
                                 text: `${data.mensaje}`,
                                 confirmButtonText: 'Aceptar',
-                                confirmButtonColor: '#f97316', 
-                                background: '#f0f0f0',        
-                                backdrop: 'rgba(255, 165, 0, 0.2)' 
+                                confirmButtonColor: '#f97316',
+                                background: '#f0f0f0',
+                                backdrop: 'rgba(255, 165, 0, 0.2)'
                             });
                             fetchProductos();
                         })
@@ -469,9 +503,9 @@
                                 title: 'Error al agregar stock',
                                 text: 'Hubo un problema al agregar el stock. Intenta nuevamente.',
                                 confirmButtonText: 'Aceptar',
-                                confirmButtonColor: '#f97316', 
-                                background: '#f0f0f0',        
-                                backdrop: 'rgba(255, 165, 0, 0.2)' 
+                                confirmButtonColor: '#f97316',
+                                background: '#f0f0f0',
+                                backdrop: 'rgba(255, 165, 0, 0.2)'
                             });
                         });
                 }
@@ -479,6 +513,144 @@
 
         }
     </script>
+
+    <script>
+        async function obtenerFacturas() {
+            try {
+                const response = await fetch('http://localhost:3000/ver-facturas');
+                const facturas = await response.json();
+                const tableBody = document.getElementById('facturas-list');
+
+                tableBody.innerHTML = '';
+
+                facturas.forEach(factura => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td class="py-2 px-4 border-b">${factura.factura_id}</td>
+                    <td class="py-2 px-4 border-b">${factura.user_id}</td>
+                    <td class="py-2 px-4 border-b">${new Date(factura.fecha).toLocaleString()}</td>
+                    <td class="py-2 px-4 border-b">$${parseFloat(factura.total).toFixed(2)}</td>
+                    <td class="py-2 px-4 border-b">${factura.estado}</td>
+                    <td class="px-6 py-4 border-b">
+                    <button onclick="imprimirFactura(${factura.factura_id})" class="bg-orange-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAOZJREFUSEvVlj0OwjAMRt93CVgQEhMDA0fhIEyMSIgFMbCwcBfOgRiYYWDgFEZFtAoWpW1o+ckYOX7+bMeJaHipYf/kAszMqsAlPfX1fUBeZKm6VGm0gv8BmFlSjxkwBtpVChzYXoCNpGW6lxXZzNbAJNKxP7aQNE82Q0BCbwEDSYcYkJkNgR1wltTxgFvfFxXVd0+Wivs98F0VKvgtQF4Ka1PwNiB2FpVW8DFAUVf5iF8pOAFdn9uyAHfuKKnn78EIWAH90DgCsAemkrYPAB950RiubVyXHRnR70FjgLKOi+wa/1VcAbDNqBkRxxDMAAAAAElFTkSuQmCC"/>                    </button>
+                    </td>
+                `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error al obtener las facturas:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', obtenerFacturas);
+
+
+    </script>
+
+    <script>
+        async function imprimirFactura(facturaId) {
+            try {
+                const response = await fetch(`http://localhost:3000/ver-factura/${facturaId}`);
+                const factura = await response.json();
+
+                if (!factura || !factura.productos || !Array.isArray(factura.productos)) {
+                    console.error('Factura no encontrada o no tiene productos');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+                doc.setFontSize(22);
+                doc.setTextColor('#f97316');
+
+                const title = 'Farmacia GG';
+                const titleWidth = doc.getTextWidth(title);
+                const pageWidth = doc.internal.pageSize.getWidth();
+                doc.text(title, (pageWidth - titleWidth) / 2, 30);
+
+                doc.setFontSize(18);
+                doc.setTextColor('#333');
+                doc.text('Recibo de Compra', (pageWidth - doc.getTextWidth('Recibo de Compra')) / 2, 40);
+
+                doc.setFontSize(12);
+                doc.setTextColor('#666');
+                doc.text(`Nombre: ${factura.user_nombre} ${factura.user_apellido}`, 10, 60);
+                doc.text(`Cédula: ${factura.user_cedula}`, 10, 70);
+                doc.text(`Correo: ${factura.user_correo}`, 10, 80);
+
+                const fechaCompra = new Date(factura.fecha).toLocaleString();
+                doc.text(`Fecha: ${fechaCompra}`, 10, 90);
+
+                const items = factura.productos.map((producto) => [
+                    producto.nombre_producto,
+                    `$${producto.precio_unitario.toFixed(2)}`,
+                    producto.cantidad,
+                    `$${(producto.cantidad * producto.precio_unitario).toFixed(2)}`
+                ]);
+
+                doc.autoTable({
+                    head: [['Producto', 'Precio Unitario ($)', 'Cantidad', 'Total ($)']],
+                    body: items,
+                    startY: 100,
+                    styles: {
+                        cellPadding: 5,
+                        tableLineColor: [249, 115, 22],
+                        tableLineWidth: 1,
+                        fillColor: [255, 255, 255],
+                        textColor: [0, 0, 0],
+                        fontSize: 12,
+                    },
+                    headStyles: {
+                        fillColor: [249, 115, 22],
+                        textColor: [255, 255, 255],
+                        fontSize: 14,
+                    },
+                    alternateRowStyles: {
+                        fillColor: [240, 240, 240],
+                    },
+                    margin: { top: 10 },
+                });
+
+                const costSummaryStartY = doc.autoTable.previous.finalY + 10;
+                const subtotal = factura.productos.reduce((sum, item) => sum + (item.precio_unitario * item.cantidad), 0);
+                const iva = subtotal * 0.15;
+                const total = subtotal + iva;
+
+                doc.setFontSize(12);
+                doc.setTextColor('#333');
+                doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 10, costSummaryStartY);
+                doc.text(`IVA (15%): $${iva.toFixed(2)}`, 10, costSummaryStartY + 10);
+                doc.setFontSize(14);
+                doc.setTextColor('#f97316');
+                doc.text(`Total: $${total.toFixed(2)}`, 10, costSummaryStartY + 20);
+
+                const thankYouMessage = "¡Su salud es nuestra prioridad! Agradecemos su compra.";
+                doc.setFontSize(12);
+                doc.setTextColor('#333');
+                doc.text(thankYouMessage, (pageWidth - doc.getTextWidth(thankYouMessage)) / 2, costSummaryStartY + 40);
+
+                const pageNumber = "Página 1";
+                doc.setFontSize(10);
+                doc.setTextColor('#999');
+                doc.text(pageNumber, 10, doc.internal.pageSize.height - 10);
+
+                doc.setDrawColor(249, 115, 22);
+                doc.line(10, costSummaryStartY + 25, pageWidth - 10, costSummaryStartY + 25);
+
+                const formattedDate = new Date(factura.fecha).toLocaleDateString().replace(/\//g, '-');
+                doc.save(`Factura N°${factura.factura_id} - ${formattedDate}.pdf`);
+
+            } catch (error) {
+                console.error('Error al imprimir la factura:', error);
+            }
+        }
+
+    </script>
+
 </body>
 
 </html>
