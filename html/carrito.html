@@ -267,6 +267,54 @@
 
             const iva = subtotal * 0.15;
             total += iva;
+            for (const producto of carrito) {
+                try {
+                    const response = await fetch('http://localhost:3000/comprar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            pro_id: producto.id,
+                            cantidad: producto.cantidad,
+                        }),
+                    });
+                    if (response.ok) {
+
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Compra exitosa',
+                            text: 'Todos los productos han sido comprados exitosamente.',
+                            confirmButtonText: 'Aceptar',
+                            confirmButtonColor: '#f97316',
+                            background: '#f0f0f0',
+                            backdrop: 'rgba(255, 165, 0, 0.2)',
+                            timer: 5000,
+                            timerProgressBar: true
+                        });
+                    }
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al procesar la compra',
+                            text: `No se pudo comprar el producto: ${errorText}`
+                        });
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error al comprar el producto', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al procesar la compra',
+                        text: `No se pudo comprar el producto: ${error.message}`
+                    });
+                    return;
+                }
+            }
 
             // Enviar la factura al servidor
             const facturaResponse = await fetch('http://localhost:3000/facturas', {
