@@ -177,10 +177,10 @@ app.post('/facturas', async (req, res) => {
       );
     }
 
-    await client.query('COMMIT'); 
+    await client.query('COMMIT');
     res.status(201).json({ mensaje: 'Factura almacenada con éxito.', facturaId });
   } catch (err) {
-    await client.query('ROLLBACK'); 
+    await client.query('ROLLBACK');
     console.error('Error al almacenar la factura:', err);
     res.status(500).send('Error al almacenar la factura');
   } finally {
@@ -190,7 +190,20 @@ app.post('/facturas', async (req, res) => {
 
 app.get('/ver-facturas', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM facturas ORDER BY factura_id ASC');
+    const result = await pool.query(`
+      SELECT 
+        f.factura_id, 
+        f.total, 
+        f.fecha, 
+        f.estado,
+        u.user_id, 
+        u.user_nombre, 
+        u.user_apellido
+      FROM facturas f
+      JOIN usuario u ON f.user_id = u.user_id
+      ORDER BY f.factura_id ASC
+    `);
+
     res.json(result.rows);
   } catch (error) {
     console.error('Error al obtener facturas', error);
@@ -242,7 +255,7 @@ GROUP BY
     }
 
 
-    res.json(result.rows[0]); 
+    res.json(result.rows[0]);
   } catch (error) {
     console.error('Error al obtener la factura:', error);
     res.status(500).json({ error: 'Error interno del servidor' });

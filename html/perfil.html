@@ -527,7 +527,7 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                     <td class="py-2 px-4 border-b">${factura.factura_id}</td>
-                    <td class="py-2 px-4 border-b">${factura.user_id}</td>
+                    <td class="py-2 px-4 border-b">${factura.user_nombre} ${factura.user_apellido}</td>
                     <td class="py-2 px-4 border-b">${new Date(factura.fecha).toLocaleString()}</td>
                     <td class="py-2 px-4 border-b">$${parseFloat(factura.total).toFixed(2)}</td>
                     <td class="py-2 px-4 border-b">${factura.estado}</td>
