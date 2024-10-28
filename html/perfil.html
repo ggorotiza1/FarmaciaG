@@ -361,23 +361,25 @@
                         <td class="px-6 py-4 border-b">${producto.pro_stock}</td>
                         <td class="px-6 py-4 border-b">${producto.pro_estado}</td>
                         <td class="px-6 py-4 border-b">
-                            <button onclick="addStock(${producto.pro_id})" class="bg-orange-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
+                            <button title="Agregar Stock" onclick="addStock(${producto.pro_id})" class="bg-orange-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
                                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAY5JREFUSEvNlD9IlWEUh5+HbGmwQUipIYKgobEh3RpqbAkEh0CI0kWoiGjMMcSIaAqKIIekpcVNwS2qoalJxwQVaQkK7uLJV+6V6+d9/V65Kp31HM5zfuefHLF5xPk5PkBERFPNH+Ctev8w1O0oaAO08t5QF7qF7GlRRDwBngFz6s1OgFYxam2LOwH6gDXgBHBe/VmFdAVIySJiBrgNTKlJ0S47DMAQ8Bn4BZxTGxGxCdmt21ST4j2W7WFE/AAuA6Pq+xJARLwCJoCX6oNE2w8wBrwGvqlX20vr1KKIOAlsAKeBS+pSHeAUsAr0AlfU7y1IBjCylfgD8FUdbMXuu2Ztkt+pd2oA88B14J76phRwEVgGGsAZ9XfmLs4CK8BfoF9N32Dbag8lIhaBa8BjdToDmNza7qfNF3O3PaYEMAx8LHwZQ+qXgwJ6gLQRF2ogn9Rb1ZhaBYWVZ8OKABHxEHgEPFdfVG4i6ysacvM3pefXD6yrAxVA1ncQQLrodEiz6ngFkPUVA7qZQ9EM/mvAPx4RqBn3Wov4AAAAAElFTkSuQmCC"/>
-                                </button>
+                            </button>
+                            <button title="Cambiar Estado" onclick="cambiarEstado(${producto.pro_id})" class="bg-orange-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAS9JREFUSEvtlb8uBUEYxX8nqPypFB5BoVPSSBQq78ADSIROopNQ3OABeAMPICFReASNRKj1JBKRYyeZK7vr3t0dd25nu81+c35nvjnfjhjzozHrkwSwvQvsAT1Jp13MpQLegGngXdJMF2AjoC5g233XkmS7Ahy0ozZA3XEdUH//1cI2QJtg645yAyrA0LJ/QOMZJbWoy1CVa0KMK4CY+UPgRNJx+FjOfQ5AP/NBa03SXW7AJbAVnT4BS8BHqvPypNdbNA88Fz+y2Vh0BBxkA8Se7wDnUfQTmMoNmAAegMW/Csd1r5IWBsbU9gpwPyLgWtLG0DmwfQFsjwBZl3TbBJgEroDNRMgXsC/p7CdNwwRsB0gYvFVgGZhrgL0UdTfxKn2sTHSiw+TypDs5Wb1Y8A0tdcIZoopyIgAAAABJRU5ErkJggg=="/>                            
+                            </button>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
         }
 
         /*
-                                    <button onclick="editProduct(${producto.pro_id})" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded">
-                               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAbtJREFUSEvFlT1PFFEUhp+30VhqjBQYFRK/ENTSBCIQm00s+Af+BWsbGhpp/Q/WdsZKjZ+9iYUGYTFgIqGwEIXGlz2bs2QYlmVnyMZpJnNz53nPx3vuFQN+NGA+xxawfQK4D5wCnkn6Wwx6n4DtOeAxcK1HZv+AB5Ke2j4NvARu5/4vwB1Jvzr/lwXWgOE+4WcSfgtYB34DV4GPwKykneCUBdxelHqWzvbZhE8AS8A9YCvXbgIPJT2pJWD7HPAauJ6Zfmt9zwARcZRrHFiQNF9ZwPYQ8CrhPzLqy0CU9g9wBdgAJiTFu/8SJfwDMJo1nwTCMSE4ltlEL+5KWj6syV17YDsa/6YIl7SaLnoL3OiIxnovmx4QSPh74GIRUoIHdDpFG5Je9JVBBfikpHXbjRy2GLr209OmtleAS8D3jLDZxaIzAQ+Y7W3gZNHmRwm0SwaczwjD/2HRqPnXbOjPTrS2D5S4L4GIKCN/l9MaR0LUfA+eGdQTKB0dAZ+StFk+UmpnUAB9jqntBq+VQdW7onIGgxCIgblQFVza35Q0ctgcxIWzmE6po/Opdao+kvS8q0Ad4lH/HPtO/u8Cu0VT+hkStBhWAAAAAElFTkSuQmCC"/>
-                            </button>
-                            <button onclick="deleteProduct(${producto.pro_id})" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAALFJREFUSEvtlVEKAjEMRGfuIgjudTyOn4KX8ToueJosFQt1t83U1uLP7l9JkzeT0A0x+OPg+nABZnYGcAVwLAh5AriQvJeEKsADwEm4nElOrQALiSSzQszMjb9yPXWqgIpvADGhd/Cp4w8HwwFReY311KV3v3l4PwWsFapzCq9yoAp2t2gHbN7Vty3ZZyB/Td0tUoQWQM2iWXOzi6f0ksOqvAE4KPXveHF1/nfpV6p3ry3epM4ZCBVpxgAAAABJRU5ErkJggg=="/>
-                            </button>
-                            */
+                        <button onclick="editProduct(${producto.pro_id})" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded">
+                   <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAbtJREFUSEvFlT1PFFEUhp+30VhqjBQYFRK/ENTSBCIQm00s+Af+BWsbGhpp/Q/WdsZKjZ+9iYUGYTFgIqGwEIXGlz2bs2QYlmVnyMZpJnNz53nPx3vuFQN+NGA+xxawfQK4D5wCnkn6Wwx6n4DtOeAxcK1HZv+AB5Ke2j4NvARu5/4vwB1Jvzr/lwXWgOE+4WcSfgtYB34DV4GPwKykneCUBdxelHqWzvbZhE8AS8A9YCvXbgIPJT2pJWD7HPAauJ6Zfmt9zwARcZRrHFiQNF9ZwPYQ8CrhPzLqy0CU9g9wBdgAJiTFu/8SJfwDMJo1nwTCMSE4ltlEL+5KWj6syV17YDsa/6YIl7SaLnoL3OiIxnovmx4QSPh74GIRUoIHdDpFG5Je9JVBBfikpHXbjRy2GLr209OmtleAS8D3jLDZxaIzAQ+Y7W3gZNHmRwm0SwaczwjD/2HRqPnXbOjPTrS2D5S4L4GIKCN/l9MaR0LUfA+eGdQTKB0dAZ+StFk+UmpnUAB9jqntBq+VQdW7onIGgxCIgblQFVza35Q0ctgcxIWzmE6po/Opdao+kvS8q0Ad4lH/HPtO/u8Cu0VT+hkStBhWAAAAAElFTkSuQmCC"/>
+                </button>
+                <button onclick="deleteProduct(${producto.pro_id})" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAALFJREFUSEvtlVEKAjEMRGfuIgjudTyOn4KX8ToueJosFQt1t83U1uLP7l9JkzeT0A0x+OPg+nABZnYGcAVwLAh5AriQvJeEKsADwEm4nElOrQALiSSzQszMjb9yPXWqgIpvADGhd/Cp4w8HwwFReY311KV3v3l4PwWsFapzCq9yoAp2t2gHbN7Vty3ZZyB/Td0tUoQWQM2iWXOzi6f0ksOqvAE4KPXveHF1/nfpV6p3ry3epM4ZCBVpxgAAAABJRU5ErkJggg=="/>
+                </button>
+                */
 
         // addProductBtn.addEventListener('click', () => {
         //     modalTitle.textContent = 'Agregar Producto';
@@ -454,10 +456,10 @@
                 showCancelButton: true,
                 confirmButtonText: 'Agregar',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#f97316', 
-                cancelButtonColor: '#d33',      
-                background: '#f0f0f0',        
-                backdrop: 'rgba(255, 165, 0, 0.2)', 
+                confirmButtonColor: '#f97316',
+                cancelButtonColor: '#d33',
+                background: '#f0f0f0',
+                backdrop: 'rgba(255, 165, 0, 0.2)',
                 preConfirm: (value) => {
                     if (!value || value <= 0) {
                         Swal.showValidationMessage('Por favor, ingrese una cantidad válida mayor a 0.');
@@ -532,7 +534,7 @@
                     <td class="py-2 px-4 border-b">$${parseFloat(factura.total).toFixed(2)}</td>
                     <td class="py-2 px-4 border-b">${factura.estado}</td>
                     <td class="px-6 py-4 border-b">
-                    <button onclick="imprimirFactura(${factura.factura_id})" class="bg-orange-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
+                    <button title="Imprimir" onclick="imprimirFactura(${factura.factura_id})" class="bg-orange-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-2">
                         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAOZJREFUSEvVlj0OwjAMRt93CVgQEhMDA0fhIEyMSIgFMbCwcBfOgRiYYWDgFEZFtAoWpW1o+ckYOX7+bMeJaHipYf/kAszMqsAlPfX1fUBeZKm6VGm0gv8BmFlSjxkwBtpVChzYXoCNpGW6lxXZzNbAJNKxP7aQNE82Q0BCbwEDSYcYkJkNgR1wltTxgFvfFxXVd0+Wivs98F0VKvgtQF4Ka1PwNiB2FpVW8DFAUVf5iF8pOAFdn9uyAHfuKKnn78EIWAH90DgCsAemkrYPAB950RiubVyXHRnR70FjgLKOi+wa/1VcAbDNqBkRxxDMAAAAAElFTkSuQmCC"/>                    </button>
                     </td>
                 `;
@@ -646,6 +648,54 @@
 
             } catch (error) {
                 console.error('Error al imprimir la factura:', error);
+            }
+        }
+    </script>
+
+    <script>
+        async function cambiarEstado(productId) {
+            try {
+                const response = await fetch(`http://localhost:3000/productos/${productId}/cambiar-estado`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const nuevoEstado = result.nuevoEstado;
+
+                    Swal.fire({
+                        title: 'Estado actualizado',
+                        text: `El estado del producto ha cambiado a: ${nuevoEstado}`,
+                        icon: 'success',
+                        confirmButtonColor: '#f97316',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        fetchProductos();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudo cambiar el estado del producto',
+                        icon: 'error',
+                        confirmButtonColor: '#f97316',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Cerrar'
+                    });
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                Swal.fire({
+                    title: 'Error en la solicitud',
+                    text: 'Hubo un problema al cambiar el estado del producto',
+                    icon: 'error',
+                    confirmButtonColor: '#f97316',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Cerrar'
+                });
             }
         }
 

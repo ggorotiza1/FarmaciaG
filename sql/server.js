@@ -42,6 +42,21 @@ app.get('/productos', async (req, res) => {
   }
 });
 
+// Ruta para obtener los productos
+app.get('/productos-disponibles', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT pro_id, pro_nombre, pro_descripcion, pro_ruta, pro_estado, pro_precio, pro_stock 
+      FROM public.productos WHERE pro_estado = 'Activo'
+      ORDER BY pro_id ASC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error al obtener los productos', err);
+    res.status(500).send('Error al obtener los productos');
+  }
+});
+
 // Ruta para obtener los usuarios
 app.get('/usuarios', async (req, res) => {
   try {
@@ -261,6 +276,24 @@ GROUP BY
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
+app.put('/productos/:id/cambiar-estado', async (req, res) => {
+  const { id } = req.params;
+
+  const result = await pool.query(
+    'UPDATE productos SET pro_estado = CASE WHEN pro_estado = \'Activo\' THEN \'Inactivo\' ELSE \'Activo\' END WHERE pro_id = $1 RETURNING pro_estado',
+    [id]
+  );
+
+  if (result.rowCount > 0) {
+    const nuevoEstado = result.rows[0].pro_estado;
+    res.json({ nuevoEstado });
+  } else {
+    res.status(404).json({ error: 'Producto no encontrado' });
+  }
+});
+
+
 
 // Iniciar el servidor
 app.listen(port, () => {

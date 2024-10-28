@@ -47,7 +47,6 @@
             justify-content: center;
             align-items: center;
         }
-        
     </style>
 </head>
 
@@ -94,9 +93,11 @@
                 <div id="carrito-preview" class="hidden absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4">
                     <h3 class="text-lg font-bold mb-2">Carrito de Compras</h3>
                     <ul id="carrito-items" class="space-y-2"></ul>
-                    <a href="carrito.html" class="block text-center text-orange-500 mt-4 font-bold hover:text-orange-600">Ver Carrito Completo</a>
+                    <a href="carrito.html"
+                        class="block text-center text-orange-500 mt-4 font-bold hover:text-orange-600">Ver Carrito
+                        Completo</a>
                 </div>
-                
+
             </nav>
         </div>
     </header>
@@ -138,28 +139,28 @@
     <script>
         async function cargarProductos() {
             try {
-                const response = await fetch('http://localhost:3000/productos');
+                const response = await fetch('http://localhost:3000/productos-disponibles');
                 const productos = await response.json();
 
                 const productosGrid = document.getElementById('productos-grid');
                 productosGrid.innerHTML = '';
 
                 productos.forEach(producto => {
-    const productoHTML = `
-        <div class="bg-white p-6 rounded-lg shadow-lg neon-border hover:shadow-2xl transition-all duration-300">
-            <img src="${producto.pro_ruta}" alt="${producto.pro_nombre}" class="w-full h-48 object-cover rounded mb-4">
-            <div class="bg-opacity-50 bg-gray-800 p-4 rounded">
-                <h3 class="text-2xl font-bold text-white mb-2">${producto.pro_nombre}</h3>
-                <p class="text-white mb-4">${producto.pro_descripcion}</p>
-                <p class="text-white mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
-                <p class="text-white mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
-                <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
-                    onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}', ${producto.pro_stock})">Agregar al Carrito</button>
-            </div>
-        </div>
-    `;
-    productosGrid.innerHTML += productoHTML;
-});
+                    const productoHTML = `
+                        <div class="bg-white p-6 rounded-lg shadow-lg neon-border hover:shadow-2xl transition-all duration-300">
+                            <img src="${producto.pro_ruta}" alt="${producto.pro_nombre}" class="w-full h-48 object-cover rounded mb-4">
+                            <div class="bg-opacity-50 bg-gray-800 p-4 rounded">
+                                <h3 class="text-2xl font-bold text-white mb-2">${producto.pro_nombre}</h3>
+                                <p class="text-white mb-4">${producto.pro_descripcion}</p>
+                                <p class="text-white mb-4"><strong>Costo del producto: </strong>$${producto.pro_precio}</p>
+                                <p class="text-white mb-4"><strong>Stock: </strong>${producto.pro_stock}</p>
+                                <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition duration-300"
+                                    onclick="agregarAlCarrito(${producto.pro_id}, '${producto.pro_nombre}', ${producto.pro_precio}, '${producto.pro_ruta}', ${producto.pro_stock})">Agregar al Carrito</button>
+                            </div>
+                        </div>
+                    `;
+                    productosGrid.innerHTML += productoHTML;
+                });
 
             } catch (error) {
                 console.error('Error al cargar los productos:', error);
